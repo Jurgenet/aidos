@@ -19,7 +19,9 @@
     }
   },
   "scripts": {
-    "dev": "pnpm -r --parallel --stream --if-present dev",
+    "dev": "concurrently -n server,client -c blue,green \"pnpm --filter @aid/server dev\" \"pnpm --filter @aid/client dev\"",
+    "dev:server": "pnpm --filter @aid/server dev",
+    "dev:client": "pnpm --filter @aid/client dev",
     "build": "pnpm -r --if-present build",
     "start": "pnpm -r --if-present start",
     "test": "pnpm -r --if-present test",
@@ -31,6 +33,7 @@
     "clean": "pnpm -r --if-present exec rm -rf dist"
   },
   "devDependencies": {
+    "concurrently": "^10.0.0",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.6",
