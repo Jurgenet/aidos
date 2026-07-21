@@ -21,9 +21,54 @@ Logger: pino + pino-pretty
 
 Stack: Quasar 2, Vue 3, Pinia, SASS, TypesScript
 
+```
+apps/client/
+├── package.json              # @aid/client, скрипты dev/build/typecheck/lint/preview
+├── tsconfig.json             # src/ — ES2022, Bundler, DOM, vite/client
+├── tsconfig.node.json        # vite.config.ts — Node-типы
+├── vite.config.ts            # vue + @quasar/vite-plugin, alias @/, proxy /api→:3000
+├── index.html                # entry, lang="ru"
+└── src/
+    ├── main.ts               # Vue + Pinia + Router + Quasar (Notify, ru, material-icons)
+    ├── App.vue               # <router-view />
+    ├── env.d.ts              # vite/client + .vue shim
+    ├── router/index.ts       # 3 маршрута + 404
+    ├── layouts/MainLayout.vue     # QLayout + QHeader + QDrawer + nav
+    ├── pages/IndexPage.vue        # /
+    ├── pages/HealthPage.vue       # /health → fetch('/api/health/ready')
+    ├── pages/AboutPage.vue        # /about
+    ├── pages/ErrorNotFound.vue    # 404
+    ├── stores/example.ts          # Pinia setup-store
+    └── css/
+        ├── quasar-variables.sass  # $primary, $dark, ...
+        └── app.scss
+```
+
 ### Server API
 
 Stack: NodeJS ^24, ExpressJS 5, Mongoose 9, TypesScript
+
+```
+apps/server/
+├── package.json              # @aid/server, Express + Mongoose + Pino, скрипты dev/build/start
+├── tsconfig.json             # extends ../../tsconfig.base.json; outDir: dist, rootDir: src
+└── src/
+    ├── index.ts              # Entry point: connect Mongo, start HTTP, signal handlers
+    ├── app.ts                # Express app factory: JSON, logging, routes, error/404 middleware
+    ├── server.ts             # HTTP lifecycle: start / graceful shutdown (close + Mongo disconnect)
+    ├── config/
+    │   ├── env.ts            # typed config (PORT, MONGO_URI, LOG_LEVEL, ...)
+    │   ├── load-env.ts       # .env loader (без dotenv, одноразовый вызов)
+    │   └── logger.ts         # Pino instance; pretty в dev, JSON в prod
+    ├── db/
+    │   └── mongo.ts          # Mongoose connection manager: connect, disconnect, state checks
+    ├── routes/
+    │   ├── index.ts          # API router aggregator (mounts health)
+    │   └── health.ts         # GET /health (liveness), GET /health/ready (readiness + Mongo)
+    └── middleware/
+        ├── error-handler.ts  # Express error middleware + HttpError class
+        └── not-found.ts      # 404 catch-all → HttpError(404)
+```
 
 ## Packages
 
@@ -70,45 +115,13 @@ Quasar2 UI-KIT Базовых компонентов
 - [ ] `pnpm -r typecheck` (если выделено в скрипт) — TypeScript без `any`-костылей в публичных API
 - [ ] Вручную проверен сценарий из задачи в dev-режиме (`pnpm dev`)
 - [ ] Diff пересмотрен самому: нет закомментированного кода, дебаг-логов, мёртвых файлов
-- [ ] Если менялся публичный контракт (типы в `md`, API-роуты, схемы БД) — отражено в `## Принятые решения`
+- [ ] Если менялся публичный контракт (типы в `md`, API-роуты, схемы БД) — отражено в [docs/ADR.md](docs/ADR.md)
 - [ ] Если менялся стек или инфраструктура — обновлён соответствующий раздел README
 - [ ] Коммиты прошли `git rebase -i` (squash мусорных/WIP)
 
 ### Принятые решения
 
-Здесь фиксируем архитектурные и инфраструктурные ADR в формате коротких записей. Новая запись добавляется наверх.
-
-#### ADR-0001 — Monorepo на pnpm workspaces
-
-Контекст: клиент, сервер и три пакета общего кода живут в одном репозитории. Решение: `pnpm` workspaces, `apps/*` для приложений, `packages/*` для библиотек. Альтернативы (npm/yarn workspaces, turborepo, nx) — избыточны для одного разработчика.
-
-#### ADR-0002 — Self-contained, без CI/husky/ревью
-
-Контекст: проект ведёт один человек, AI-агенты помогают с рутиной. Решение: PR-чеклист обязателен, но прогоняет его сам автор. CI/husky добавим, когда появится второй контрибьютор или стабилизируется MVP. Альтернативы (полноценный CI с первого коммита) — оверкилл на старте.
-
-#### ADR-0003 — Шаринг сущностей через `md`
-
-Контекст: модели данных нужны и фронту, и бэку. Решение: пакет `md` содержит «толстые» модули сущностей — типы, схемы, сервисы, контроллеры, роутеры, store-фабрики, quasar-компоненты. Альтернативы (отдельные DTO-пакеты, GraphQL codegen, OpenAPI) — лишний слой абстракции для текущего масштаба.
-
-#### ADR-0004 — Свободные breaking changes
-
-Контекст: на стадии MVP стабильность публичного API не требуется. Решение: допустимы breaking changes между коммитами, помечаем `!` и описываем в футере коммита. Когда выйдем из MVP — пересмотрим.
-
-#### ADR-0005 — TS ^6, NodeNext, ES2022
-
-Контекст: нужна максимальная совместимость с современными фичами ESM. Решение: TypeScript ^6, module resolution `NodeNext`, target `ES2022`. Альтернативы (CommonJS, ES2020) — устаревшие.
-
-#### ADR-0006 — Vitest + ESLint + Prettier (root flat config)
-
-Контекст: единые инструменты на весь монорепо. Решение: `vitest` для тестов (быстрее jest, нативная ESM-поддержка), `eslint` + `prettier` с плоскими конфигами в корне. Альтернативы (jest, отдельные конфиги на пакет) — лишняя сложность.
-
-#### ADR-0007 — MongoDB ^8 как основное хранилище
-
-Контекст: данные слабо структурированы, схема будет эволюционировать. Решение: MongoDB 8 + Mongoose 9, без отдельной ORM/ODM-схемы. Альтернативы (Postgres + Prisma) — добавим, если появится реляционная нагрузка.
-
-#### ADR-0008 — Клиент на Vue 3 + Vite + Quasar 2 (UI-kit), без `@quasar/app-vite`
-
-Контекст: нужен современный SPA-клиент с готовыми UI-компонентами, при этом без жёсткой привязки к Quasar-CLI. Решение: `Vue 3.5` + `Vite 5` + ручной setup, Quasar 2 подключается как библиотека компонентов через `@quasar/vite-plugin`. Состояние — `Pinia`, роутинг — `vue-router 4`. Для корректной типизации в монорепо с `NodeNext` на сервере — отдельный `tsconfig.node.json` под `vite.config.ts` с `moduleResolution: "Bundler"`. UI на русском (`quasar/lang/ru`), иконки Material. Альтернативы: `@quasar/app-vite` (тянет свой opinionated CLI и не дружит с pnpm-монорепо без плясок), Nuxt/SvelteKit (избыточно для MVP).
+Список ADR вынесен в [docs/ADR.md](docs/ADR.md).
 
 ## Roadmap
 
