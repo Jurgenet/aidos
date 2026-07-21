@@ -2,21 +2,30 @@
   <q-page padding>
     <h1 class="text-h4 q-mb-md">Server health</h1>
 
-    <q-card v-if="loading" class="q-mb-md">
+    <q-card
+      v-if="loading"
+      class="q-mb-md"
+    >
       <q-card-section class="row items-center">
         <q-spinner class="q-mr-sm" />
         <span>Загрузка...</span>
       </q-card-section>
     </q-card>
 
-    <q-card v-else-if="error" class="bg-negative text-white q-mb-md">
+    <q-card
+      v-else-if="error"
+      class="bg-negative text-white q-mb-md"
+    >
       <q-card-section>
         <div class="text-h6">Ошибка</div>
         <div>{{ error }}</div>
       </q-card-section>
     </q-card>
 
-    <q-card v-else-if="data" class="q-mb-md">
+    <q-card
+      v-else-if="data"
+      class="q-mb-md"
+    >
       <q-card-section>
         <div class="text-h6">status: {{ data.status }}</div>
         <div>mongo: {{ data.mongo ?? '—' }}</div>
@@ -25,7 +34,12 @@
       </q-card-section>
     </q-card>
 
-    <q-btn color="primary" label="Обновить" :loading="loading" @click="load" />
+    <q-btn
+      color="primary"
+      label="Обновить"
+      :loading="loading"
+      @click="load"
+    />
   </q-page>
 </template>
 
