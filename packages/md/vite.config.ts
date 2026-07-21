@@ -1,0 +1,25 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url'
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    target: 'es2022',
+    lib: {
+      entry: {
+        'http-error': fileURLToPath(new URL('./src/http-error/index.ts', import.meta.url)),
+        'user/types': fileURLToPath(new URL('./src/user/types/index.ts', import.meta.url)),
+        'user/server': fileURLToPath(new URL('./src/user/server/index.ts', import.meta.url)),
+        'user/client': fileURLToPath(new URL('./src/user/client/index.ts', import.meta.url)),
+      },
+      formats: ['es'],
+      fileName: (_format, entryName) => `${entryName}/index.js`,
+    },
+    rollupOptions: {
+      external: ['vue', 'pinia', 'mongoose', 'express', 'zod', '@aid/mq/forms', '@aid/mq/buttons', '@aid/mq/tables'],
+    },
+  },
+})
