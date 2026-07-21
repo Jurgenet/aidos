@@ -1,6 +1,6 @@
 {
   "name": "@aid/client",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
     "lint:fix": "prettier --write . --ignore-path ../../.prettierignore"
   },
   "dependencies": {
+    "@aid/mq": "workspace:*",
     "@quasar/extras": "^2.0.2",
     "pinia": "^2.2.6",
     "quasar": "^2.22.0",
