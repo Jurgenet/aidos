@@ -4,3 +4,4 @@ node_modules/
 **/.quasar/**
 pnpm-lock.yaml
 *.md
+*.timestamp-*.mjs
