@@ -57,43 +57,7 @@ Quasar2 UI-KIT Базовых компонентов
 
 ### Правила коммитов
 
-Используем [Conventional Commits](https://www.conventionalcommits.org/) на английском. Один коммит — одна логическая правка.
-
-Коммит только после прямого указателя программиста, никаких автокоммитов коммитов после сделанной работы
-
-Формат: `<type>(<scope>): <subject>`
-
-Базовые типы:
-
-- `feat` — новая функциональность
-- `fix` — исправление бага
-- `refactor` — правка кода без изменения поведения
-- `perf` — оптимизация производительности
-- `test` — только тесты
-- `docs` — только документация
-- `chore` — инфраструктура, конфиги, зависимости, gitignore
-- `build` — сборка/CI/докер
-- `style` — форматирование без смысловых правок
-- `revert` — откат
-
-Правила:
-
-- `scope` — название пакета/приложения: `client`, `server`, `md`, `mq`, `mu`, `root`
-- `subject` — на английском, в нижнем регистре, без точки в конце, до 72 символов
-- Тело коммита — только если контекст неочевиден из subject
-- Breaking change помечаем `!` после типа/скоупа и описываем в футере: `BREAKING CHANGE: <что сломалось и что делать>`
-- WIP-коммиты в основной ветке не допускаются — squash/rebase перед мержем
-- Запрещено коммитить скомпилированные файлы, `.env`, секреты, большие бинари
-
-Примеры:
-
-```text
-feat(md): add user entity module with types and store factory
-fix(server): handle mongo connection retry on cold start
-refactor(client): split user form into composables
-chore(root): bump typescript to 7.4
-feat(api)!: drop support for legacy auth header
-```
+Правила определены в настройках субагента @committer
 
 ### Чеклист перед PR
 
