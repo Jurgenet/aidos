@@ -106,11 +106,15 @@ Quasar2 UI-KIT Базовых компонентов
 
 Контекст: данные слабо структурированы, схема будет эволюционировать. Решение: MongoDB 8 + Mongoose 9, без отдельной ORM/ODM-схемы. Альтернативы (Postgres + Prisma) — добавим, если появится реляционная нагрузка.
 
+#### ADR-0008 — Клиент на Vue 3 + Vite + Quasar 2 (UI-kit), без `@quasar/app-vite`
+
+Контекст: нужен современный SPA-клиент с готовыми UI-компонентами, при этом без жёсткой привязки к Quasar-CLI. Решение: `Vue 3.5` + `Vite 5` + ручной setup, Quasar 2 подключается как библиотека компонентов через `@quasar/vite-plugin`. Состояние — `Pinia`, роутинг — `vue-router 4`. Для корректной типизации в монорепо с `NodeNext` на сервере — отдельный `tsconfig.node.json` под `vite.config.ts` с `moduleResolution: "Bundler"`. UI на русском (`quasar/lang/ru`), иконки Material. Альтернативы: `@quasar/app-vite` (тянет свой opinionated CLI и не дружит с pnpm-монорепо без плясок), Nuxt/SvelteKit (избыточно для MVP).
+
 ## Roadmap
 
-1. Настройка архитектуры на MVP
-2. Базовый каркас `apps/server` (Express 5, Mongoose 9, pino, healthcheck, graceful shutdown)
-3. Базовый каркас `apps/client` (Quasar 2, роутинг, Pinia-store, dev-proxy на сервер)
+1. ~~Настройка архитектуры на MVP~~
+2. ~~Базовый каркас `apps/server` (Express 5, Mongoose 9, pino, healthcheck, graceful shutdown)~~
+3. ~~Базовый каркас `apps/client` (Quasar 2, роутинг, Pinia-store, dev-proxy на сервер)~~
 4. Пакет `mu` — первый набор утилит (логгер-обёртка, env-loader, http-error)
 5. Пакет `mq` — базовые UI-компоненты поверх Quasar (AppButton, AppInput, AppTable)
 6. Пакет `md` — первая сущность `User` (типы, модель, сервис, контроллер, роутер, store-фабрика, форма)
