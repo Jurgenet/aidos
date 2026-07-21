@@ -83,7 +83,7 @@ Quasar2 UI-KIT Базовых компонентов
 
 ### MU (mod utils)
 
-Библиотека независимых утилит на TypesScript
+Библиотека независимых утилит на TypesScript, чистых функций разделенных по типу, например модуль array отвечает за обработку массивов, модуль string - строк
 
 ## Рабочие инструкции для AI-агентов
 
@@ -128,7 +128,7 @@ Quasar2 UI-KIT Базовых компонентов
 1. ~~Настройка архитектуры на MVP~~
 2. ~~Базовый каркас `apps/server` (Express 5, Mongoose 9, pino, healthcheck, graceful shutdown)~~
 3. ~~Базовый каркас `apps/client` (Quasar 2, роутинг, Pinia-store, dev-proxy на сервер)~~
-4. Пакет `mu` — первый набор утилит (логгер-обёртка, env-loader, http-error)
+4. Пакет `mu` — базовый набор утилит (array, string, ...)
 5. Пакет `mq` — базовые UI-компоненты поверх Quasar (AppButton, AppInput, AppTable)
 6. Пакет `md` — первая сущность `User` (типы, модель, сервис, контроллер, роутер, store-фабрика, форма)
 7. Docker-compose для dev-окружения (MongoDB + server + client)
