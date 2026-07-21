@@ -5,7 +5,7 @@
 Monorepo via pnpm, worspaces: app and packages
 Self-contaned, без CI/husky/review
 
-Main code language: TypeScript ^7, root flat confiruration ES2022, NodeNext
+Main code language: TypeScript ^6, root flat confiruration ES2022, NodeNext
 Testing: vitest, root flat configuration
 Linting: exlint + prettier
 Database: MongoDB ^8
@@ -130,9 +130,9 @@ feat(api)!: drop support for legacy auth header
 
 Контекст: на стадии MVP стабильность публичного API не требуется. Решение: допустимы breaking changes между коммитами, помечаем `!` и описываем в футере коммита. Когда выйдем из MVP — пересмотрим.
 
-#### ADR-0005 — TS ^7, NodeNext, ES2022
+#### ADR-0005 — TS ^6, NodeNext, ES2022
 
-Контекст: нужна максимальная совместимость с современными фичами ESM. Решение: TypeScript ^7, module resolution `NodeNext`, target `ES2022`. Альтернативы (CommonJS, ES2020) — устаревшие.
+Контекст: нужна максимальная совместимость с современными фичами ESM. Решение: TypeScript ^6, module resolution `NodeNext`, target `ES2022`. Альтернативы (CommonJS, ES2020) — устаревшие.
 
 #### ADR-0006 — Vitest + ESLint + Prettier (root flat config)
 
