@@ -129,7 +129,7 @@ Quasar2 UI-KIT Базовых компонентов
 2. ~~Базовый каркас `apps/server` (Express 5, Mongoose 9, pino, healthcheck, graceful shutdown)~~
 3. ~~Базовый каркас `apps/client` (Quasar 2, роутинг, Pinia-store, dev-proxy на сервер)~~
 4. ~~Пакет `mu` — базовый набор утилит (array, string, ...)~~
-5. Пакет `mq` — базовые UI-компоненты поверх Quasar (UiButton, UiInput, UiTable)
+5. ~~Пакет `mq` — базовые UI-компоненты поверх Quasar (UiButton, UiInput, UiTable)~~
 6. Пакет `md` — первая сущность `User` (типы, модель, сервис, контроллер, роутер, store-фабрика, форма)
 7. Docker-compose для dev-окружения (MongoDB + server + client)
 8. Сценарий `pnpm dev` (одной командой поднимает всё окружение)
