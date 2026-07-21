@@ -45,6 +45,15 @@ withDefaults(
     :bordered="bordered"
     :dense="dense"
   >
-    <slot />
+    <!-- Прокидываем все слоты родителя в QTable (включая named: body-cell-*, top, bottom, и т.д.) -->
+    <template
+      v-for="(_, name) in $slots"
+      #[name]="slotData"
+    >
+      <slot
+        :name="name"
+        v-bind="slotData || {}"
+      />
+    </template>
   </QTable>
 </template>
