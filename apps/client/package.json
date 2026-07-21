@@ -12,14 +12,14 @@
     "lint:fix": "prettier --write . --ignore-path ../../.prettierignore"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.12",
+    "@quasar/extras": "^2.0.2",
     "pinia": "^2.2.6",
-    "quasar": "^2.17.0",
+    "quasar": "^2.22.0",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@quasar/vite-plugin": "^1.8.0",
+    "@quasar/vite-plugin": "^1.12.0",
     "@types/node": "^24.0.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "sass-embedded": "^1.81.0",
