@@ -1,0 +1,6 @@
+node_modules/
+**/dist/**
+**/coverage/**
+**/.quasar/**
+pnpm-lock.yaml
+*.md
