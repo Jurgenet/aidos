@@ -30,14 +30,14 @@ apps/client/
 ├── index.html                # entry, lang="ru"
 └── src/
     ├── main.ts               # Vue + Pinia + Router + Quasar (Notify, ru, material-icons)
-    ├── App.vue               # <router-view />
+    ├── app.vue               # <router-view />
     ├── env.d.ts              # vite/client + .vue shim
     ├── router/index.ts       # 3 маршрута + 404
-    ├── layouts/MainLayout.vue     # QLayout + QHeader + QDrawer + nav
-    ├── pages/IndexPage.vue        # /
-    ├── pages/HealthPage.vue       # /health → fetch('/api/health/ready')
-    ├── pages/AboutPage.vue        # /about
-    ├── pages/ErrorNotFound.vue    # 404
+    ├── layouts/main-layout.vue     # QLayout + QHeader + QDrawer + nav
+    ├── pages/index-page.vue        # /
+    ├── pages/health-page.vue       # /health → fetch('/api/health/ready')
+    ├── pages/about-page.vue        # /about
+    ├── pages/error-not-found.vue   # 404
     ├── stores/example.ts          # Pinia setup-store
     └── css/
         ├── quasar-variables.sass  # $primary, $dark, ...
