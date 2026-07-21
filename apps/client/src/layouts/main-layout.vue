@@ -50,6 +50,15 @@
           <q-item-section avatar><q-icon name="info" /></q-item-section>
           <q-item-section>О проекте</q-item-section>
         </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          :to="{ name: 'user' }"
+        >
+          <q-item-section avatar><q-icon name="people" /></q-item-section>
+          <q-item-section>Пользователи</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
