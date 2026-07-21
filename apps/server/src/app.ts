@@ -1,17 +1,17 @@
-import express, { type Express } from 'express';
-import { apiRouter } from './routes/index.js';
-import { errorHandler } from './middleware/error-handler.js';
-import { notFound } from './middleware/not-found.js';
-import { logger } from './config/logger.js';
+import express, { type Express } from 'express'
+import { apiRouter } from './routes/index.js'
+import { errorHandler } from './middleware/error-handler.js'
+import { notFound } from './middleware/not-found.js'
+import { logger } from './config/logger.js'
 
 export function createApp(): Express {
-  const app = express();
+  const app = express()
 
-  app.disable('x-powered-by');
-  app.use(express.json({ limit: '1mb' }));
+  app.disable('x-powered-by')
+  app.use(express.json({ limit: '1mb' }))
 
   app.use((req, res, next) => {
-    const start = Date.now();
+    const start = Date.now()
     res.on('finish', () => {
       logger.debug(
         {
@@ -21,15 +21,15 @@ export function createApp(): Express {
           ms: Date.now() - start,
         },
         'request',
-      );
-    });
-    next();
-  });
+      )
+    })
+    next()
+  })
 
-  app.use(apiRouter());
+  app.use(apiRouter())
 
-  app.use(notFound);
-  app.use(errorHandler);
+  app.use(notFound)
+  app.use(errorHandler)
 
-  return app;
+  return app
 }
