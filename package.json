@@ -25,6 +25,8 @@
     "build": "pnpm -r --if-present build",
     "start": "pnpm -r --if-present start",
     "test": "pnpm -r --if-present test",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium",
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
     "lint:fix": "pnpm -r --if-present lint:fix",
@@ -33,6 +35,7 @@
     "clean": "pnpm -r --if-present exec rm -rf dist"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "concurrently": "^10.0.0",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",

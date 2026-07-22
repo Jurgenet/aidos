@@ -44,6 +44,7 @@ withDefaults(
     :flat="flat"
     :bordered="bordered"
     :dense="dense"
+    :pagination="{ rowsPerPage: 0 }"
   >
     <!-- Прокидываем все слоты родителя в QTable (включая named: body-cell-*, top, bottom, и т.д.) -->
     <template

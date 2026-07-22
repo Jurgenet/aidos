@@ -64,8 +64,13 @@ function onSubmit() {
       class="q-mb-sm"
     />
     <div class="q-mb-md">
-      <label class="block q-mb-xs">Роль</label>
+      <label
+        for="user-role"
+        class="block q-mb-xs"
+        >Роль</label
+      >
       <select
+        id="user-role"
         v-model="form.role"
         class="q-select"
       >

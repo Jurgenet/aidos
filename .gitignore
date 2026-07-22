@@ -53,6 +53,11 @@ dump/
 infra/caddy/caddy-ca.crt
 infra/caddy/caddy-ca.key
 
+# --- Playwright artifacts ---
+test-results/
+playwright-report/
+playwright/.cache/
+
 # --- Misc ---
 *.local
 .tmp/

@@ -1,6 +1,6 @@
 {
   "name": "@aid/mq",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "UI-компоненты поверх Quasar 2, сгруппированные по типу: buttons, forms, tables. Согласованные дефолты задают «дизайн-систему mq»",
   "type": "module",
