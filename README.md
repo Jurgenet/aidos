@@ -136,7 +136,7 @@ async/await вместо Promises
 8. ~~Сценарий `pnpm dev` (одной командой поднимает всё окружение)~~
 9. ~~Vitest-каркас + smoke-тест на User entity~~
 10. ~~E2E-сценарий CRUD User через UI после выхода MVP-каркаса~~
-11. Добавить сущность Account (title, group, email, login, password, link, description)
+11. ~~Добавить сущность Account (title, group, email, login, password, link, description)~~
 12. Добавить сущность Note (title, content, links, createdAt, updatedAt, tags: string[], isPinned)
 13. Добавить сущность Device (title, image, model, vendor, location, order, createdAt, updatedAt, tags: string[], description, isPinned, isZipped, isBroken)
 14. Добавить сущность Order (date, group, title, price, amount, vendor, seller, link, tags, description)
