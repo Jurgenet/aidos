@@ -5,7 +5,8 @@ import { Schema, model } from 'mongoose'
  *
  * Поля:
  * - `title` — название записи (1..200 символов), обязательное
- * - `group` — категория/группа (например "Email", "Banking"), обязательное
+ * - `group` — категория/группа (например "Email", "Banking"). Опционально —
+ *   запись можно создать и без неё. `default: ''` для согласованности с zod (форма шлёт '').
  * - `email` — опционально, валидируется zod-схемой в контроллере
  * - `login` — опционально
  * - `password` — чувствительное, `select: false` — НЕ возвращается в API по умолчанию
@@ -17,7 +18,7 @@ import { Schema, model } from 'mongoose'
 const accountSchema = new Schema(
   {
     title: { type: String, required: true, minlength: 1, maxlength: 200 },
-    group: { type: String, required: true, minlength: 1, maxlength: 100 },
+    group: { type: String, required: false, default: '', maxlength: 100 },
     email: { type: String, required: false, default: '' },
     login: { type: String, required: false, default: '' },
     password: { type: String, required: false, default: '', select: false },

@@ -35,9 +35,17 @@ describe('accountSchema', () => {
 })
 
 describe('createAccountSchema', () => {
-  it('title и group обязательны', () => {
+  it('title обязателен', () => {
     expect(() => createAccountSchema.parse({ ...valid, title: '' })).toThrow()
-    expect(() => createAccountSchema.parse({ ...valid, group: '' })).toThrow()
+  })
+
+  it('group опциональна — пустая строка и undefined оба проходят', () => {
+    expect(() => createAccountSchema.parse({ ...valid, group: '' })).not.toThrow()
+    expect(() => createAccountSchema.parse({ ...valid, group: undefined })).not.toThrow()
+  })
+
+  it('group ограничена 100 символами (когда задана)', () => {
+    expect(() => createAccountSchema.parse({ ...valid, group: 'x'.repeat(101) })).toThrow()
   })
 
   it('длина title ограничена 200 символами', () => {
@@ -52,10 +60,10 @@ describe('createAccountSchema', () => {
     expect(() => createAccountSchema.parse({ ...valid, link: 'not-a-url' })).toThrow()
   })
 
-  it('принимает минимальный payload — только title и group', () => {
-    const parsed = createAccountSchema.parse({ title: 'X', group: 'Y' })
+  it('принимает минимальный payload — только title', () => {
+    const parsed = createAccountSchema.parse({ title: 'X' })
     expect(parsed.title).toBe('X')
-    expect(parsed.group).toBe('Y')
+    expect(parsed.group).toBeUndefined()
   })
 })
 
