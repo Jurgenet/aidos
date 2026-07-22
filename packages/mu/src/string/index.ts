@@ -15,13 +15,14 @@ export function capitalize(s: string): string {
 
 /**
  * Обрезает строку до `len` символов, добавляя `suffix` (по умолчанию `…`),
- * если строка длиннее. Если `len <= длины suffix`, вернётся усечённый suffix.
+ * если строка длиннее. Суффикс считается в лимит длины. Если `len <= длины suffix`,
+ * вернётся усечённый suffix.
  *
  * @example
- *   truncate('Hello, world!', 8)       // → 'Hello…'
- *   truncate('Hello, world!', 8, '...') // → 'Hell...'
- *   truncate('short', 10)              // → 'short' (не трогает короткие)
- *   truncate('Hello', 1)               // → '…' (len меньше длины suffix)
+ *   truncate('Hello, world!', 8)        // → 'Hello, …'
+ *   truncate('Hello, world!', 8, '...') // → 'Hello...'
+ *   truncate('short', 10)               // → 'short' (не трогает короткие)
+ *   truncate('Hello', 1)                // → '…' (len меньше длины suffix)
  */
 export function truncate(s: string, len: number, suffix = '…'): string {
   if (s.length <= len) return s
