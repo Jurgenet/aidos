@@ -1,6 +1,6 @@
 {
   "name": "@aid/md",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Модули сущностей: типы, модель, сервис, контроллер, роутер, store-фабрика, форма. Расшариваются между Client и Server",
   "type": "module",
@@ -44,6 +44,18 @@
     "./note/client": {
       "types": "./dist/note/client/index.d.ts",
       "import": "./dist/note/client/index.js"
+    },
+    "./device/types": {
+      "types": "./dist/device/types/index.d.ts",
+      "import": "./dist/device/types/index.js"
+    },
+    "./device/server": {
+      "types": "./dist/device/server/index.d.ts",
+      "import": "./dist/device/server/index.js"
+    },
+    "./device/client": {
+      "types": "./dist/device/client/index.d.ts",
+      "import": "./dist/device/client/index.js"
     }
   },
   "scripts": {
