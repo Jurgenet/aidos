@@ -12,8 +12,7 @@ export const accountSchema = z.object({
   group: z.string().max(100).optional().or(z.literal('')),
   email: z.string().email().optional().or(z.literal('')),
   login: z.string().max(200).optional().or(z.literal('')),
-  // password — чувствительное поле, не возвращается API по умолчанию
-  // (см. Mongoose `select: false`).
+  // password — хранится и возвращается as-is (без шифрования, MVP).
   password: z.string().max(500).optional(),
   link: z.string().url().optional().or(z.literal('')),
   description: z.string().max(2000).optional().or(z.literal('')),

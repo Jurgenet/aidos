@@ -1,6 +1,6 @@
 {
   "name": "@aid/md",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Модули сущностей: типы, модель, сервис, контроллер, роутер, store-фабрика, форма. Расшариваются между Client и Server",
   "type": "module",

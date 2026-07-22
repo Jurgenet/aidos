@@ -9,8 +9,8 @@ import { Schema, model } from 'mongoose'
  *   запись можно создать и без неё. `default: ''` для согласованности с zod (форма шлёт '').
  * - `email` — опционально, валидируется zod-схемой в контроллере
  * - `login` — опционально
- * - `password` — чувствительное, `select: false` — НЕ возвращается в API по умолчанию
- *   (если нужна запись с паролем — `findById(id).select('+password')` явно)
+ * - `password` — хранится и возвращается as-is. Шифрование вне скоупа MVP;
+ *   если понадобится — добавим через pre-save hook и `select: false` позже.
  * - `link` — URL, опционально
  * - `description` — свободный текст, опционально
  * - `createdAt`/`updatedAt` — опция `timestamps`
@@ -21,7 +21,7 @@ const accountSchema = new Schema(
     group: { type: String, required: false, default: '', maxlength: 100 },
     email: { type: String, required: false, default: '' },
     login: { type: String, required: false, default: '' },
-    password: { type: String, required: false, default: '', select: false },
+    password: { type: String, required: false, default: '' },
     link: { type: String, required: false, default: '' },
     description: { type: String, required: false, default: '' },
   },
