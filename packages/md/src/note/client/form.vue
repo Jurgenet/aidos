@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
-import { UiInput } from '@aid/mq/forms'
+import { UiInput, UiCheckbox } from '@aid/mq/forms'
 import { UiButton } from '@aid/mq/buttons'
 import type { Note, CreateNoteInput } from '../types/index.js'
 
@@ -99,7 +99,7 @@ function onSubmit() {
       class="q-mb-sm"
     />
     <div class="q-mb-md">
-      <q-checkbox
+      <UiCheckbox
         v-model="form.isPinned"
         label="Закрепить"
       />

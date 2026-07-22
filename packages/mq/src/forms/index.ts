@@ -3,3 +3,9 @@
  * (`outlined`, `dense`), v-model через `defineModel`.
  */
 export { default as UiInput } from './input/index.vue'
+
+/**
+ * Чекбокс — `UiCheckbox`. Обёртка над Quasar QCheckbox с дефолтом `dense`,
+ * v-model через `defineModel<boolean>()`.
+ */
+export { default as UiCheckbox } from './checkbox/index.vue'

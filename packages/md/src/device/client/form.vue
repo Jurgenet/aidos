@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
-import { UiInput } from '@aid/mq/forms'
+import { UiInput, UiCheckbox } from '@aid/mq/forms'
 import { UiButton } from '@aid/mq/buttons'
 import type { Device, CreateDeviceInput } from '../types/index.js'
 
@@ -138,15 +138,15 @@ function onSubmit() {
       class="q-mb-sm"
     />
     <div class="q-mb-md row q-gutter-md">
-      <q-checkbox
+      <UiCheckbox
         v-model="form.isPinned"
         label="Закрепить"
       />
-      <q-checkbox
+      <UiCheckbox
         v-model="form.isZipped"
         label="Упаковано"
       />
-      <q-checkbox
+      <UiCheckbox
         v-model="form.isBroken"
         label="Сломано"
       />
