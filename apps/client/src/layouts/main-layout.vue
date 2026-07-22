@@ -77,6 +77,15 @@
           <q-item-section avatar><q-icon name="sticky_note_2" /></q-item-section>
           <q-item-section>Заметки</q-item-section>
         </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          :to="{ name: 'device' }"
+        >
+          <q-item-section avatar><q-icon name="devices" /></q-item-section>
+          <q-item-section>Устройства</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
