@@ -134,7 +134,7 @@ Quasar2 UI-KIT Базовых компонентов
 7. ~~Docker-compose для dev-окружения (MongoDB + server + client)~~
 8. ~~Сценарий `pnpm dev` (одной командой поднимает всё окружение)~~
 9. ~~Vitest-каркас + smoke-тест на User entity~~
-10. E2E-сценарий CRUD User через UI после выхода MVP-каркаса
+10. ~~E2E-сценарий CRUD User через UI после выхода MVP-каркаса~~
 
 ## Future Features
 
