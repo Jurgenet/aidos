@@ -1,0 +1,42 @@
+# AID dev — Caddy reverse proxy.
+#
+# Слушает на :80 и :443, маршрутизирует:
+#   /api/*  → server:3000   (Express API)
+#   /*      → client:4173   (Vite dev-сервер, включая HMR WebSocket)
+#
+# Авто-HTTPS: Caddy сам выпускает сертификат для `localhost` через
+# свой встроенный CA (XCA) при первом запросе. Браузер покажет
+# "не доверен" пока ты не добавишь корневой CA в trust store —
+# см. инструкцию в README проекта.
+
+# Глобальные опции (опционально, для тишины в логах).
+{
+  # admin off      # отключить admin API (включен по умолчанию на :2019)
+  # auto_https off # полностью отключить авто-HTTPS (не нужно для dev)
+}
+
+# `localhost` — единственный host, для которого Caddy выпустит
+# автоматический сертификат. Если поменяешь на свой домен — он
+# попробует Let's Encrypt (нужен публичный домен + 80/443 наружу).
+localhost {
+  # /api/* → Express. `uri strip_prefix /api` снимает префикс
+  # (Express не ждёт /api в путях — клиент ходит по /api только
+  # потому, что Vite/Caddy должны знать, куда делегировать).
+  handle /api/* {
+    uri strip_prefix /api
+    reverse_proxy server:3000
+  }
+
+  # Всё остальное → Vite dev-сервер.
+  # Caddy из коробки проксирует WebSocket-апгрейд (нужен для Vite HMR).
+  handle {
+    reverse_proxy client:4173
+  }
+
+  # Логи: пишем в stdout/stderr (видно в `docker compose logs caddy`).
+  log {
+    output stdout
+    format console
+    level INFO
+  }
+}

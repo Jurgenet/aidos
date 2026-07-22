@@ -1,0 +1,49 @@
+# --- Dependencies ---
+**/node_modules
+**/node_modules/**
+.pnpm-store
+**/.pnpm-store
+
+# --- Build output ---
+dist
+build
+out
+*.tsbuildinfo
+.vite
+
+# --- VCS ---
+.git
+.gitignore
+.gitattributes
+
+# --- Editor / IDE ---
+.vscode
+.idea
+*.swp
+*.swo
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Env (не запекаем секреты в образ) ---
+.env
+.env.*
+!.env.example
+
+# --- Logs ---
+*.log
+logs
+
+# --- Docs (на runtime не нужны) ---
+*.md
+!README.md
+
+# --- Test artifacts ---
+coverage
+.nyc_output
+
+# --- Docker (нужны для сборки, но не в runtime) ---
+docker-compose.yml
+compose.yaml
+.dockerignore

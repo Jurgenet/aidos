@@ -49,6 +49,10 @@ data/
 *.sqlite3
 dump/
 
+# --- Local dev certs (per-instance, regenerated on each machine) ---
+infra/caddy/caddy-ca.crt
+infra/caddy/caddy-ca.key
+
 # --- Misc ---
 *.local
 .tmp/

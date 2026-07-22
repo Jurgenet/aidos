@@ -1,0 +1,176 @@
+# AID — dev-окружение через Docker Compose.
+#
+# Запуск:    docker compose up
+# Остановка: docker compose down
+# Сброс БД:  docker compose down -v        # удалит И том с данными!
+#
+# После старта открывай https://localhost (Caddy выдаст сертификат
+# автоматически через свой локальный CA). HTTP → HTTPS редирект
+# встроен в Caddy.
+#
+# Структура:
+#   caddy   — единая точка входа на :80/:443, авто-HTTPS для localhost,
+#             проксирует /api/* и статику
+#   mongo   — MongoDB 8, данные в named volume (живут между перезапусками)
+#   server  — наш Express-бэкенд из apps/server
+#   client  — Vue-фронтенд из apps/client (Vite dev-сервер)
+#
+# server и client собраны из одного Dockerfile (см. Dockerfile в корне).
+# Исходники монтируются bind-mount'ами — правки в src/ видны без пересборки.
+
+name: aid
+
+services:
+  # -----------------------------------------------------------------------
+  # Caddy — единая точка входа на :80/:443 с авто-HTTPS
+  # -----------------------------------------------------------------------
+  # Проксирует /api/* на server:3000, всё остальное — на client:4173.
+  # Включая WebSocket для Vite HMR (Caddy делает это сам).
+  # Конфиг: infra/caddy/Caddyfile.
+  #
+  # Авто-HTTPS: для `localhost` Caddy использует свой встроенный CA (XCA)
+  # и сохраняет сертификаты в named volume `caddy_data`. При первом
+  # запуске сертификат генерируется автоматически, HTTP → HTTPS редирект
+  # включён по умолчанию.
+  #
+  # ⚠️ Браузер покажет "не доверен" пока ты не добавишь корневой CA
+  # Caddy в trust store. Подробнее — см. README раздел "HTTPS".
+  caddy:
+    image: caddy:2-alpine
+    container_name: aid-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Named volumes для сертификатов и конфига Caddy. Без них Caddy будет
+      # пересоздавать сертификаты при каждом перезапуске.
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - client
+      - server
+
+  # -----------------------------------------------------------------------
+  # MongoDB — хранилище данных
+  # -----------------------------------------------------------------------
+  # Данные лежат в named volume `aid-mongo-data` (объявлен внизу).
+  # volume управляется Docker'ом, а не bind-mount'ом:
+  #   - переживает `docker compose down` (в отличие от контейнеров)
+  #   - удаляется только через `docker compose down -v` или `docker volume rm`
+  #   - не зависит от путей на хосте
+  # При первом запуске Docker создаёт том автоматически.
+  mongo:
+    image: mongo:8
+    container_name: aid-mongo
+    restart: unless-stopped
+    ports:
+      # Пробрасываем порт, чтобы можно было подключиться извне
+      # (mongosh, Compass, Robo 3T). Внутри compose server ходит
+      # по имени `mongo` через `MONGO_URI`.
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      # Проверяем, что mongosh отвечает; сервер ждёт этой проверки
+      # через `depends_on: condition: service_healthy`.
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  # -----------------------------------------------------------------------
+  # Server — Express + Mongoose
+  # -----------------------------------------------------------------------
+  # Собирается из локального Dockerfile (один образ, разные команды —
+  # см. CMD в Dockerfile, здесь переопределяем через `command:`).
+  #
+  # Смонтированы ТОЛЬКО src/ и packages/ (read-only):
+  #   - node_modules лежит в образе — там корректные Linux-symlinks от pnpm,
+  #     bind-mount с хоста на Windows их бы поломал
+  #   - правки в server/src/ подхватываются на лету (tsx watch в dev-скрипте
+  #     перезапускает процесс; сейчас скрипт без watch из-за stdio-проблем
+  #     под concurrently, но в Docker это не актуально)
+  #   - правки в packages/ тоже подхватываются (volumes перекрывают образ)
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aid-server
+    restart: unless-stopped
+    # Запускаем dev-скрипт только для @aid/server (не весь concurrently).
+    command: pnpm --filter @aid/server dev
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      # Внутри compose host'ом БД является сервис `mongo`, а не localhost.
+      MONGO_URI: mongodb://mongo:27017/aid
+      MONGO_DB_NAME: aid
+      NODE_ENV: development
+      LOG_LEVEL: info
+    volumes:
+      # :ro — read-only, чтобы контейнер случайно не затёр хост-исходники.
+      - ./apps/server/src:/app/apps/server/src:ro
+      - ./packages:/app/packages:ro
+    depends_on:
+      # Не стартовать, пока Mongo не пройдёт healthcheck.
+      mongo:
+        condition: service_healthy
+
+  # -----------------------------------------------------------------------
+  # Client — Vue 3 + Vite dev-сервер
+  # -----------------------------------------------------------------------
+  # Vite слушает на 0.0.0.0:4173 (см. vite.config.ts). Порт пробрасываем
+  # для прямого доступа в обход caddy (удобно для отладки — иначе HMR
+  # может путаться через двойной прокси).
+  # /api/* дублируется в двух местах:
+  #   1) caddy :443 → server:3000  (основной путь для пользователя)
+  #   2) Vite  :4173 → server:3000 (для прямого доступа на 4173)
+  #
+  # CHOKIDAR_USEPOLLING=true — Vite chokidar на bind-mount'ах Docker под
+  # Linux/Windows не получает нативные FS-события, нужен polling.
+  # На Linux-хосте с нативным watching это можно отключить.
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aid-client
+    restart: unless-stopped
+    command: pnpm --filter @aid/client dev
+    working_dir: /app
+    ports:
+      - "4173:4173"
+    environment:
+      # Vite dev-сервер (внутри client-контейнера) проксирует /api/* сюда.
+      VITE_SERVER_URL: http://server:3000
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./apps/client/src:/app/apps/client/src:ro
+      - ./packages:/app/packages:ro
+    # `server` тут без healthcheck — Vite сам переподключится, когда
+    # server поднимется. depends_on тут только для порядка старта.
+    depends_on:
+      - server
+
+# -----------------------------------------------------------------------
+# Named volumes
+# -----------------------------------------------------------------------
+# `mongo-data` — данные MongoDB. `name: aid-mongo-data` фиксирует имя
+# тома на хосте, чтобы он был предсказуемым (иначе compose генерирует
+# имя вида `aid_mongo-data`).
+#
+# Полезные команды:
+#   docker volume ls                       # список всех томов
+#   docker volume inspect aid-mongo-data   # где физически лежит
+#   docker compose down -v                 # ⚠️ удалит И данные тоже
+#   docker volume rm aid-mongo-data        # ручная очистка
+volumes:
+  mongo-data:
+    name: aid-mongo-data
+  caddy_data:
+    name: aid-caddy-data
+  caddy_config:
+    name: aid-caddy-config
