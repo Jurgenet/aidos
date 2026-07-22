@@ -68,6 +68,15 @@
           <q-item-section avatar><q-icon name="key" /></q-item-section>
           <q-item-section>Аккаунты</q-item-section>
         </q-item>
+
+        <q-item
+          clickable
+          v-ripple
+          :to="{ name: 'note' }"
+        >
+          <q-item-section avatar><q-icon name="sticky_note_2" /></q-item-section>
+          <q-item-section>Заметки</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
