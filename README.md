@@ -99,6 +99,7 @@ Quasar2 UI-KIT Базовых компонентов
 Без точек с запятой
 Пробелы вместо табуляции
 Одинарные кавычки вместо двойных
+async/await вместо Promises
 
 ### Правила коммитов
 
@@ -135,10 +136,15 @@ Quasar2 UI-KIT Базовых компонентов
 8. ~~Сценарий `pnpm dev` (одной командой поднимает всё окружение)~~
 9. ~~Vitest-каркас + smoke-тест на User entity~~
 10. ~~E2E-сценарий CRUD User через UI после выхода MVP-каркаса~~
+11. Добавить сущность Account (title, group, email, login, password, link, description)
+12. Добавить сущность Note (title, content, links, createdAt, updatedAt, tags: string[], isPinned)
+13. Добавить сущность Device (title, image, model, vendor, location, order, createdAt, updatedAt, tags: string[], description, isPinned, isZipped, isBroken)
+14. Добавить сущность Order (date, group, title, price, amount, vendor, seller, link, tags, description)
+15. Добавить Бэкап/Рестор базы данных (mgob?)
+16. Изучить необходимость добавления плагина `eslint-plugin-vue`
+17. Данные резюме, места работы
+18. Загрузка/Хранение картинок, файлов
 
 ## Future Features
 
-- Сущность Account
-- Сущность Note
-- Бэкап/Рестор базы данных (mgob?)
 - Обновить TS до версии 7, когда стабилизируется
