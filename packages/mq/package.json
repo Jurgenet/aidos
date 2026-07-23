@@ -16,6 +16,10 @@
     "./tables": {
       "types": "./dist/tables/index.d.ts",
       "import": "./dist/tables/index.js"
+    },
+    "./toolbars": {
+      "types": "./dist/toolbars/index.d.ts",
+      "import": "./dist/toolbars/index.js"
     }
   },
   "scripts": {

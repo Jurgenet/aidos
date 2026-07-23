@@ -13,6 +13,7 @@ export default defineConfig({
         buttons: fileURLToPath(new URL('./src/buttons/index.ts', import.meta.url)),
         forms: fileURLToPath(new URL('./src/forms/index.ts', import.meta.url)),
         tables: fileURLToPath(new URL('./src/tables/index.ts', import.meta.url)),
+        toolbars: fileURLToPath(new URL('./src/toolbars/index.ts', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}/index.js`,
