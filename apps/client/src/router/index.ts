@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
   },
 ]
 
-export const router = createRouter({
+export default createRouter({
   history: createWebHistory(),
   routes,
 })

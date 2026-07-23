@@ -6,7 +6,7 @@
     "moduleResolution": "Bundler",
     "jsx": "preserve",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "types": ["@quasar/app-vite/client"],
     "noEmit": true,
     "useDefineForClassFields": true,
     "allowImportingTsExtensions": false,
@@ -16,6 +16,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
-  "exclude": ["node_modules", "dist", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "quasar.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

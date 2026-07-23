@@ -10,7 +10,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "electron"
     ],
     "peerDependencyRules": {
       "allowedVersions": {
@@ -22,6 +23,7 @@
     "dev": "concurrently -n server,client -c blue,green \"pnpm --filter @aid/server dev\" \"pnpm --filter @aid/client dev\"",
     "dev:server": "pnpm --filter @aid/server dev",
     "dev:client": "pnpm --filter @aid/client dev",
+    "dev:electron": "pnpm --filter @aid/client dev:electron",
     "build": "pnpm -r --if-present build",
     "start": "pnpm -r --if-present start",
     "test": "pnpm -r --if-present test",
