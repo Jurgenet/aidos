@@ -10,7 +10,7 @@ export default defineConfig({
     target: 'es2022',
     lib: {
       entry: {
-        'http-error': fileURLToPath(new URL('./src/http-error/index.ts', import.meta.url)),
+        'shared/http-error': fileURLToPath(new URL('./src/shared/http-error/index.ts', import.meta.url)),
         'user/types': fileURLToPath(new URL('./src/user/types/index.ts', import.meta.url)),
         'user/server': fileURLToPath(new URL('./src/user/server/index.ts', import.meta.url)),
         'user/client': fileURLToPath(new URL('./src/user/client/index.ts', import.meta.url)),

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import { NoteModel } from './model.js'
-import { HttpError } from '../../http-error/index.js'
+import { HttpError } from '../../shared/http-error/index.js'
 import type { Note, CreateNoteInput, UpdateNoteInput } from '../types/index.js'
 
 /** 404 — заметка не найдена по id (или id невалидный ObjectId). */

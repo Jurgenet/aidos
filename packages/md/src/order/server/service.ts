@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import { OrderModel } from './model.js'
-import { HttpError } from '../../http-error/index.js'
+import { HttpError } from '../../shared/http-error/index.js'
 import type { Order, CreateOrderInput, UpdateOrderInput } from '../types/index.js'
 
 /** 404 — заказ не найден по id. */

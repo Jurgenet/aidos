@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import { AccountModel } from './model.js'
-import { HttpError } from '../../http-error/index.js'
+import { HttpError } from '../../shared/http-error/index.js'
 import type { Account, CreateAccountInput, UpdateAccountInput } from '../types/index.js'
 
 /** 404 — аккаунт не найден по id (или id невалидный ObjectId). */

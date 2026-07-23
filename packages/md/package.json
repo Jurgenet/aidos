@@ -5,9 +5,9 @@
   "description": "Модули сущностей: типы, модель, сервис, контроллер, роутер, store-фабрика, форма. Расшариваются между Client и Server",
   "type": "module",
   "exports": {
-    "./http-error": {
-      "types": "./dist/http-error/index.d.ts",
-      "import": "./dist/http-error/index.js"
+    "./shared/http-error": {
+      "types": "./dist/shared/http-error/index.d.ts",
+      "import": "./dist/shared/http-error/index.js"
     },
     "./user/types": {
       "types": "./dist/user/types/index.d.ts",

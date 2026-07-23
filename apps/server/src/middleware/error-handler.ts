@@ -1,6 +1,6 @@
 import type { ErrorRequestHandler } from 'express'
 import { ZodError } from 'zod'
-import { HttpError } from '@aid/md/http-error'
+import { HttpError } from '@aid/md/shared/http-error'
 import { logger } from '../config/logger.js'
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {

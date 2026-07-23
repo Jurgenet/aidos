@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import { UserModel } from './model.js'
-import { HttpError } from '../../http-error/index.js'
+import { HttpError } from '../../shared/http-error/index.js'
 import type { User, CreateUserInput, UpdateUserInput, UserRole } from '../types/index.js'
 
 /** 404 — пользователь не найден по id (или id невалидный ObjectId). */
