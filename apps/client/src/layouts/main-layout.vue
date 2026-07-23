@@ -1,7 +1,21 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { version } from '../../package.json'
+import { UiToolbar } from '@aid/mq/toolbars'
+
+const leftDrawerOpen = ref(false)
+const toggleLeftDrawer = (): void => {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
+</script>
+
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <UiToolbar
+        :version="version"
+        title="AID"
+      >
         <q-btn
           flat
           dense
@@ -10,9 +24,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-toolbar-title>AID Client</q-toolbar-title>
-        <div>v{{ version }}</div>
-      </q-toolbar>
+      </UiToolbar>
     </q-header>
 
     <q-drawer
@@ -94,13 +106,3 @@
     </q-page-container>
   </q-layout>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { version } from '../../package.json'
-
-const leftDrawerOpen = ref(false)
-const toggleLeftDrawer = (): void => {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
-</script>
