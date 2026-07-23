@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useDeviceStore, DeviceForm } from '@aid/md/device/client'
+import { useDeviceStore, DeviceForm } from '@aid/me/device/client'
 import { UiButton } from '@aid/mq/buttons'
 import { UiTable } from '@aid/mq/tables'
 import type { QTableColumn } from 'quasar'
-import type { Device, CreateDeviceInput } from '@aid/md/device/types'
+import type { Device, CreateDeviceInput } from '@aid/me/device/types'
 
 const store = useDeviceStore()
 const showForm = ref(false)

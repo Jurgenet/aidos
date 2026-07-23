@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useAccountStore, AccountForm } from '@aid/md/account/client'
+import { useAccountStore, AccountForm } from '@aid/me/account/client'
 import { UiButton } from '@aid/mq/buttons'
 import { UiTable } from '@aid/mq/tables'
 import type { QTableColumn } from 'quasar'
-import type { Account, CreateAccountInput } from '@aid/md/account/types'
+import type { Account, CreateAccountInput } from '@aid/me/account/types'
 
 const store = useAccountStore()
 const showForm = ref(false)

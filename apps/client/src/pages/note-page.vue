@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useNoteStore, NoteForm } from '@aid/md/note/client'
+import { useNoteStore, NoteForm } from '@aid/me/note/client'
 import { UiButton } from '@aid/mq/buttons'
 import { UiTable } from '@aid/mq/tables'
 import type { QTableColumn } from 'quasar'
-import type { Note, CreateNoteInput } from '@aid/md/note/types'
+import type { Note, CreateNoteInput } from '@aid/me/note/types'
 
 const store = useNoteStore()
 const showForm = ref(false)

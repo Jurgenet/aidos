@@ -1,5 +1,5 @@
 {
-  "name": "@aid/md",
+  "name": "@aid/me",
   "version": "0.4.0",
   "private": true,
   "description": "Модули сущностей: типы, модель, сервис, контроллер, роутер, store-фабрика, форма. Расшариваются между Client и Server",
@@ -61,7 +61,7 @@
   "scripts": {
     "build": "vite build && vue-tsc --emitDeclarationOnly -p tsconfig.json",
     "typecheck": "vue-tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --root ../.. packages/md",
+    "test": "vitest run --root ../.. packages/me",
     "lint": "prettier --check . --ignore-path ../../.prettierignore && eslint .",
     "lint:fix": "eslint . --fix && prettier --write . --ignore-path ../../.prettierignore"
   },

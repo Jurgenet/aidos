@@ -1,6 +1,6 @@
 /**
  * Server-часть модуля Order: модель, сервис, контроллер, роутер.
- * Импортируется через `@aid/md/order/server` (apps/server).
+ * Импортируется через `@aid/me/order/server` (apps/server).
  */
 export { OrderModel } from './model.js'
 export { orderService, OrderNotFoundError } from './service.js'

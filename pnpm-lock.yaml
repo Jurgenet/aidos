@@ -32,9 +32,9 @@ importers:
 
   apps/client:
     dependencies:
-      '@aid/md':
+      '@aid/me':
         specifier: workspace:*
-        version: link:../../packages/md
+        version: link:../../packages/me
       '@aid/mq':
         specifier: workspace:*
         version: link:../../packages/mq
@@ -78,9 +78,9 @@ importers:
 
   apps/server:
     dependencies:
-      '@aid/md':
+      '@aid/me':
         specifier: workspace:*
-        version: link:../../packages/md
+        version: link:../../packages/me
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -110,7 +110,7 @@ importers:
         specifier: ^6.0.0
         version: 6.0.3
 
-  packages/md:
+  packages/me:
     devDependencies:
       '@aid/mq':
         specifier: workspace:*

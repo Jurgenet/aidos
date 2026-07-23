@@ -1,6 +1,6 @@
 /**
  * Server-часть модуля Device: модель, сервис, контроллер, роутер.
- * Импортируется через `@aid/md/device/server` (apps/server).
+ * Импортируется через `@aid/me/device/server` (apps/server).
  */
 export { DeviceModel } from './model.js'
 export { deviceService, DeviceNotFoundError } from './service.js'

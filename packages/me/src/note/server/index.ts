@@ -1,6 +1,6 @@
 /**
  * Server-часть модуля Note: модель, сервис, контроллер, роутер.
- * Импортируется через `@aid/md/note/server` (apps/server).
+ * Импортируется через `@aid/me/note/server` (apps/server).
  */
 export { NoteModel } from './model.js'
 export { noteService, NoteNotFoundError } from './service.js'

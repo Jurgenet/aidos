@@ -12,7 +12,7 @@
     "lint:fix": "prettier --write . --ignore-path ../../.prettierignore"
   },
   "dependencies": {
-    "@aid/md": "workspace:*",
+    "@aid/me": "workspace:*",
     "@aid/mq": "workspace:*",
     "@quasar/extras": "^2.0.2",
     "pinia": "^2.2.6",

@@ -1,6 +1,6 @@
 /**
  * Server-часть модуля User: модель, сервис, контроллер, роутер.
- * Импортируется через `@aid/md/user/server` (apps/server).
+ * Импортируется через `@aid/me/user/server` (apps/server).
  */
 export { UserModel } from './model.js'
 export { userService, UserNotFoundError, UserAlreadyExistsError } from './service.js'

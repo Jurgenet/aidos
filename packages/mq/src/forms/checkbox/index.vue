@@ -9,7 +9,7 @@ const model = defineModel<boolean>()
  * Чекбокс. Обёртка над Quasar QCheckbox с дефолтом mq: `dense`.
  * v-model через `defineModel<boolean>()`.
  *
- * Создан, чтобы вынести Quasar-зависимость из форм @aid/md —
+ * Создан, чтобы вынести Quasar-зависимость из форм @aid/me —
  * раньше приходилось использовать сырой <q-checkbox>, который
  * не ресолвился в workspace-пакетах, собираемых без Quasar-плагина.
  */

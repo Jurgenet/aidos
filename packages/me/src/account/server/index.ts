@@ -1,6 +1,6 @@
 /**
  * Server-часть модуля Account: модель, сервис, контроллер, роутер.
- * Импортируется через `@aid/md/account/server` (apps/server).
+ * Импортируется через `@aid/me/account/server` (apps/server).
  */
 export { AccountModel } from './model.js'
 export { accountService, AccountNotFoundError } from './service.js'

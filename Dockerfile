@@ -19,7 +19,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY tsconfig.base.json ./
 COPY apps/server/package.json       ./apps/server/
 COPY apps/client/package.json       ./apps/client/
-COPY packages/md/package.json       ./packages/md/
+COPY packages/me/package.json       ./packages/me/
 COPY packages/mq/package.json       ./packages/mq/
 COPY packages/mu/package.json       ./packages/mu/
 
@@ -31,6 +31,13 @@ RUN pnpm install --frozen-lockfile
 COPY apps/server ./apps/server
 COPY apps/client ./apps/client
 COPY packages    ./packages
+
+# Собираем общие workspace-пакеты: @aid/me, @aid/mq, @aid/mu.
+# Без `dist/*` в образе `tsx` не сможет зарезолвить workspace-импорты
+# вроде `@aid/me/shared/http-error` (они смотрят на ./dist/.../index.js).
+# .dockerignore исключает dist/* из build context, так что в момент
+# COPY packages каталоги пусты — сборка ниже их наполняет.
+RUN pnpm --filter @aid/me --filter @aid/mq --filter @aid/mu build
 
 EXPOSE 3000 4173
 

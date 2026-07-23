@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useUserStore, UserForm } from '@aid/md/user/client'
+import { useUserStore, UserForm } from '@aid/me/user/client'
 import { UiButton } from '@aid/mq/buttons'
 import { UiTable } from '@aid/mq/tables'
 import type { QTableColumn } from 'quasar'
-import type { User, CreateUserInput, UserRole } from '@aid/md/user/types'
+import type { User, CreateUserInput, UserRole } from '@aid/me/user/types'
 
 const store = useUserStore()
 const showForm = ref(false)

@@ -28,7 +28,7 @@ export interface CrudSchemas<TCreate, TUpdate> {
  * query-параметры у разных сущностей разные (User: ?role=..., Account:
  * ?group=..., Note: ?isPinned=true&tag=...).
  *
- * Не экспортируется в `package.json` — это внутренняя утилита @aid/md.
+ * Не экспортируется в `package.json` — это внутренняя утилита @aid/me.
  */
 export function createCrudController<T, TCreate, TUpdate, TFilter>(
   service: CrudService<T, TCreate, TUpdate, TFilter>,
