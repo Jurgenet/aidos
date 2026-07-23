@@ -139,7 +139,7 @@ async/await вместо Promises
 11. ~~Добавить сущность Account (title, group, email, login, password, link, description)~~
 12. ~~Добавить сущность Note (title, content, links, createdAt, updatedAt, tags: string[], isPinned)~~
 13. ~~Добавить сущность Device (title, image, model, vendor, location, order, createdAt, updatedAt, tags: string[], description, isPinned, isZipped, isBroken)~~
-14. Добавить сущность Order (date, group, title, price, amount, vendor, seller, link, tags, description)
+14. ~~Добавить сущность Order (date, group, title, price, amount, vendor, seller, link, tags, description)~~
 15. Добавить Бэкап/Рестор базы данных (mgob?)
 16. Изучить необходимость добавления плагина `eslint-plugin-vue`
 17. Данные резюме, места работы
@@ -148,3 +148,6 @@ async/await вместо Promises
 ## Future Features
 
 - Обновить TS до версии 7, когда стабилизируется
+- `CI/CD`
+- `DB Migrations — migrate-mongo + скрипты в package.json`
+- `Auth + RBAC — JWT + guards в Express + guards в Vue Router`
