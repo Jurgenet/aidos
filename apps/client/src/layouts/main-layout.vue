@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { version } from '../../package.json'
-import { UiToolbar } from '@aid/mq/toolbars'
 
-const leftDrawerOpen = ref(false)
-const toggleLeftDrawer = (): void => {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
+import { version } from '../../package.json'
+
+import { UiToolbar } from '@aid/mq/toolbars'
+import { UiDrawer } from '@aid/mq/drawers'
+
+import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
+
+const appUiSettingsStore = useAppUiSettingsStore()
+
+appUiSettingsStore.$subscribe((mutation, state) => {
+  console.log('MUTATING APP UI SETTTINGS:', mutation, state)
+})
+
 </script>
 
 <template>
@@ -22,23 +28,19 @@ const toggleLeftDrawer = (): void => {
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="appUiSettingsStore.toggleDrawerLeft"
         />
       </UiToolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
       <q-list>
         <q-item-label header>Навигация</q-item-label>
 
         <q-item
           clickable
           v-ripple
-          to="/home"
+          to="/"
           exact
         >
           <q-item-section avatar><q-icon name="home" /></q-item-section>
@@ -99,7 +101,7 @@ const toggleLeftDrawer = (): void => {
           <q-item-section>Устройства</q-item-section>
         </q-item>
       </q-list>
-    </q-drawer>
+    </UiDrawer>
 
     <q-page-container>
       <router-view />
