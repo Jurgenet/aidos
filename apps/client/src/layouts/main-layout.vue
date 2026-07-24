@@ -2,6 +2,7 @@
 
 import { version } from '../../package.json'
 
+import { UiLayout } from '@aid/mq/layouts'
 import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer } from '@aid/mq/drawers'
@@ -19,7 +20,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
 </script>
 
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <UiLayout>
     <UiHeader>
       <UiToolbar
         :version="version"
@@ -107,5 +108,5 @@ appUiSettingsStore.$subscribe((mutation, state) => {
     <q-page-container>
       <router-view />
     </q-page-container>
-  </q-layout>
+  </UiLayout>
 </template>
