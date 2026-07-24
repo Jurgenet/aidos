@@ -5,6 +5,7 @@ import { version } from '../../package.json'
 import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer } from '@aid/mq/drawers'
+import { UiList } from '@aid/mq/lists'
 
 import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
 
@@ -35,7 +36,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
     </UiHeader>
 
     <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
-      <q-list>
+      <UiList>
         <q-item-label header>Навигация</q-item-label>
 
         <q-item
@@ -101,7 +102,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           <q-item-section avatar><q-icon name="devices" /></q-item-section>
           <q-item-section>Устройства</q-item-section>
         </q-item>
-      </q-list>
+      </UiList>
     </UiDrawer>
 
     <q-page-container>
