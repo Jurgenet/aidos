@@ -37,9 +37,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
     </UiHeader>
 
     <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
-      <UiList>
-        <q-item-label header>Навигация</q-item-label>
-
+      <UiList topic="Навигация">
         <q-item
           clickable
           v-ripple
