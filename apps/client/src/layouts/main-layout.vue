@@ -6,7 +6,7 @@ import { UiLayout } from '@aid/mq/layouts'
 import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer } from '@aid/mq/drawers'
-import { UiList } from '@aid/mq/lists'
+import { UiList, UiListItemSection } from '@aid/mq/lists'
 import { UiIcon, iconNames } from '@aid/mq/icons'
 
 import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
@@ -45,8 +45,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           to="/"
           exact
         >
-          <q-item-section avatar><UiIcon :name="iconNames.home" /></q-item-section>
-          <q-item-section>Главная</q-item-section>
+          <UiListItemSection :icon="iconNames.home" />
+          <UiListItemSection label="Главная" />
         </q-item>
 
         <q-item
@@ -54,8 +54,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/health"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.monitorHeart" /></q-item-section>
-          <q-item-section>Health</q-item-section>
+          <UiListItemSection :icon="iconNames.monitorHeart" />
+          <UiListItemSection label="Health" />
         </q-item>
 
         <q-item
@@ -63,8 +63,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/about"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.info" /></q-item-section>
-          <q-item-section>О проекте</q-item-section>
+          <UiListItemSection :icon="iconNames.info" />
+          <UiListItemSection label="О проекте" />
         </q-item>
 
         <q-item
@@ -72,8 +72,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/user"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.people" /></q-item-section>
-          <q-item-section>Пользователи</q-item-section>
+          <UiListItemSection :icon="iconNames.people" />
+          <UiListItemSection label="Пользователи" />
         </q-item>
 
         <q-item
@@ -81,8 +81,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/account"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.key" /></q-item-section>
-          <q-item-section>Аккаунты</q-item-section>
+          <UiListItemSection :icon="iconNames.key" />
+          <UiListItemSection label="Аккаунты" />
         </q-item>
 
         <q-item
@@ -90,8 +90,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/note"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.stickyNote2" /></q-item-section>
-          <q-item-section>Заметки</q-item-section>
+          <UiListItemSection :icon="iconNames.stickyNote2" />
+          <UiListItemSection label="Заметки" />
         </q-item>
 
         <q-item
@@ -99,8 +99,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           v-ripple
           to="/device"
         >
-          <q-item-section avatar><UiIcon :name="iconNames.devices" /></q-item-section>
-          <q-item-section>Устройства</q-item-section>
+          <UiListItemSection :icon="iconNames.devices" />
+          <UiListItemSection label="Устройства" />
         </q-item>
       </UiList>
     </UiDrawer>
