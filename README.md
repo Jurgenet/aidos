@@ -146,6 +146,7 @@ async/await вместо Promises
 18. Загрузка/Хранение картинок, файлов
 19. @aid/mq/buttons/button: q-tooltip, q-spinner-facebook вынести в модули tooltips, spinners
 20. Базовый тулбар переделать в АппТулбар (версия в базовом не нужна)
+21. Добавить `"pinia-plugin-persistedstate": "^4.2.0"`
 
 ## Future Features
 
