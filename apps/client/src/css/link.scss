@@ -1,0 +1,5 @@
+// Ссылка, например: <router-link to="/" class="NoLinkStyles">, которая не должна оформлятся как тег <a>
+.G-NoLinkStyles {
+  color: inherit;
+  text-decoration: none;
+}

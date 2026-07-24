@@ -1,5 +1,11 @@
 /* Глобальные стили приложения. Quasar SCSS-переменные — в quasar-variables.sass. */
 
+// app global css in SCSS form
+// глобальные стили именовать с большой буквы, например: NoLinkStyles
+@import 'layout.scss';
+@import 'link.scss';
+@import 'table.scss';
+
 html,
 body,
 #q-app {

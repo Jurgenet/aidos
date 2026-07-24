@@ -1,0 +1,10 @@
+.G-TableCellFullWidth {
+  width: 100%;
+}
+
+.G-TableCellActions {
+  display: flex;
+
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
