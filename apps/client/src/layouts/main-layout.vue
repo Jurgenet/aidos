@@ -2,6 +2,7 @@
 
 import { version } from '../../package.json'
 
+import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer } from '@aid/mq/drawers'
 
@@ -17,7 +18,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
 
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated>
+    <UiHeader>
       <UiToolbar
         :version="version"
         title="AID"
@@ -31,7 +32,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           @click="appUiSettingsStore.toggleDrawerLeft"
         />
       </UiToolbar>
-    </q-header>
+    </UiHeader>
 
     <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
       <q-list>
