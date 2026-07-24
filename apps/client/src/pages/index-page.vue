@@ -36,7 +36,7 @@ const hasRows = computed(() => rows.length > 0)
 
     <UiButton
       label="Проверить сервер"
-      :to="{ name: 'health' }"
+      to="/health"
     />
 
     <q-card

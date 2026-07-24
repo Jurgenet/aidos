@@ -144,6 +144,8 @@ async/await вместо Promises
 16. Изучить необходимость добавления плагина `eslint-plugin-vue`
 17. Данные резюме, места работы
 18. Загрузка/Хранение картинок, файлов
+19. @aid/mq/buttons/button: q-tooltip, q-spinner-facebook вынести в модули tooltips, spinners
+20. Базовый тулбар переделать в АппТулбар (версия в базовом не нужна)
 
 ## Future Features
 

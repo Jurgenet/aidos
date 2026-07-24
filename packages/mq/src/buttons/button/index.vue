@@ -1,38 +1,115 @@
 <script setup lang="ts">
-import { QBtn } from 'quasar'
+/**
+ * Базовая Кнопка (QBtn)
+ */
+
+import { computed } from 'vue'
 
 defineOptions({ name: 'UiButton' })
 
-/**
- * Кнопка. Обёртка над Quasar QBtn с дефолтами mq: `no-caps`, `rounded`, `color: primary`.
- */
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    /** Текст на кнопке. */
+    /**
+     * Customs
+     */
+    tooltip?: string
+
+    // class?: string # reserved word
+
+    /**
+     * Data
+     */
+
+    // Текст на кнопке
     label?: string
-    /** Иконка слева от текста. Имя из иконсета (например `add`, `edit`, `delete`). */
+
+    /**
+     * Behavior
+     */
+
+    // Эквивалентно Vue Router <router-link> свойству 'to'; Заменяется свойством 'href', если используется
+    to?: string
+
+    // Собственный атрибут ссылки <a> href; имеет приоритет над свойствами «to» и «replace».
+    // example: '/home/dashboard' | { name: 'my-route-name' }
+    href?: string
+
+    // Собственный целевой атрибут ссылки <a>; используйте его только с параметрами «to» или «href»
+    // example: '_blank' | '_self' | '_parent' | '_top'
+    target?: string
+
+    // Эквивалентно Vue Router <router-link> свойству 'replace'; Заменяется свойством 'href', если используется
+    replace?: boolean
+
+    // Тип кнопки
+    // 1 Определите атрибут собственного типа кнопки
+    // 2. Рендерит компонент с тегом <a> так что вы можете получить доступ к событиям даже если отключены
+    // 3. Используйте свойство «href» и укажите «type» в качестве тега мультимедиа.
+    // example: 'a' | 'submit' | 'button' | 'reset' | 'image/png' | # href="https://quasar.dev" target="_blank"
+    // default: 'button'
+    type?: string;
+
+    /**
+     * Styles
+     */
+    size?: string
+    align?: 'left' | 'right' | 'between' | 'around' | 'center' | 'evenly'
+    ariaLabel?: string
     icon?: string
-    /** Цвет из палитры Quasar (`primary`, `secondary`, `positive`, `negative`, `warning`, `info`) или любой CSS-цвет. */
+    iconLeft?: string
+    iconRight?: string
+    side?: string
+    textColor?: string
     color?: string
-    /** Показать спиннер загрузки и заблокировать клики. */
-    loading?: boolean
-    /** Заблокировать кнопку. */
+    padding?: string
+    style?: string
+    percentage?: number
+    // No capitalizing label
+    noCaps?: boolean
+    // icon under text
+    stack?: boolean
+    // Окантовка (Бордер)
+    // work only with flat = false
+    outline?: boolean
+    // Плоская (без визуальной глубины)
+    flat?: boolean
+    dense?: boolean
+    round?: boolean
+    rounded?: boolean
+    // Прямоугольные углы (без скругления углов)
+    square?: boolean
+    // full-height in container
+    stretch?: boolean
+    unelevated?: boolean
+    glossy?: boolean
     disable?: boolean
+    loading?: boolean
+    darkPercentage?: boolean
+    ripple?: boolean | { color: string, center: boolean }
   }>(),
-  { color: 'primary' },
+  {
+    size: '12px',
+    flat: false,
+    loading: false,
+  },
 )
+
+const flat = computed(() => props.outline ? false : props.flat)
+
 </script>
 
 <template>
-  <QBtn
-    no-caps
-    rounded
-    :label="label"
-    :icon="icon"
-    :color="color"
-    :loading="loading"
-    :disable="disable"
+  <q-btn
+    v-bind="{...$attrs, ...props }"
+    :flat="flat"
   >
     <slot />
-  </QBtn>
+
+    <q-tooltip v-if="tooltip">{{ tooltip }}</q-tooltip>
+
+    <template v-slot:loading>
+      <q-spinner-facebook />
+    </template>
+
+  </q-btn>
 </template>

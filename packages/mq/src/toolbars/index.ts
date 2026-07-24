@@ -1,11 +1,13 @@
 /**
- * Тулбар — `UiToolbar`. Обёртка над Quasar QToolbar.
- * Содержит заголовок и версию по умолчанию, а также слот для действий.
+ * Components
+ */
+
+/**
+ * Базовый тулбар
  */
 export { default as UiToolbar } from './toolbar/index.vue'
 
 /**
- * Заголовок тулбара — `UiToolbarTitle`. Обёртка над Quasar QToolbarTitle.
- * Прокидывает слот для кастомного содержимого заголовка.
+ * Заголовок тулбара
  */
 export { default as UiToolbarTitle } from './toolbar-title/index.vue'

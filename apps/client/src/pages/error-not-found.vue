@@ -5,7 +5,7 @@
     <q-btn
       color="primary"
       label="На главную"
-      :to="{ name: 'home' }"
+      to="/home"
     />
   </q-page>
 </template>

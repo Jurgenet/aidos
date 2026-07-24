@@ -1,29 +1,45 @@
 <script setup lang="ts" generic="T extends object">
-import { QTable, type QTableColumn } from 'quasar'
+/**
+ * Базовая таблица (QTable) с дефолтами mq: `flat`, `bordered`
+ * Дженерик `T` — тип строки, прокидывается в `columns` для типизации `field`
+ */
+
+import { type QTableColumn } from 'quasar'
 
 defineOptions({ name: 'UiTable' })
 
-/**
- * Таблица. Обёртка над Quasar QTable с дефолтами mq: `flat`, `bordered`.
- * Дженерик `T` — тип строки, прокидывается в `columns` для типизации `field`.
- */
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    /** Массив строк данных. */
+    /**
+     * Data
+     */
+
+    // Массив строк данных
     rows: T[]
-    /** Описание колонок — Quasar QTableColumn<T>[]. */
+    // Описание колонок — Quasar QTableColumn<T>[]
     columns: QTableColumn<T>[]
-    /** Имя поля, однозначно идентифицирующего строку. Используется для трекинга выбора и обновлений. */
+    // Имя поля, однозначно идентифицирующего строку. Используется для трекинга выбора и обновлений
     rowKey?: string
-    /** Состояние загрузки — показывает индикатор поверх таблицы. */
-    loading?: boolean
-    /** Строка фильтрации. Применяется ко всем колонкам автоматически. */
+
+    /**
+     * Behavior
+     */
+
+    // Строка фильтрации. Применяется ко всем колонкам автоматически
     filter?: string
-    /** Убрать фон и тени — оставить только границы и линии строк. */
+
+    /**
+     * Styles
+     */
+
+    // Состояние загрузки — показывает индикатор поверх таблицы
+    loading?: boolean
+
+    // Убрать фон и тени — оставить только границы и линии строк
     flat?: boolean
-    /** Показать тонкие границы вокруг ячеек. */
+    // Показать тонкие границы вокруг ячеек
     bordered?: boolean
-    /** Компактный режим — уменьшенная высота строк. */
+    // Компактный режим — уменьшенная высота строк
     dense?: boolean
   }>(),
   {
@@ -35,15 +51,8 @@ withDefaults(
 </script>
 
 <template>
-  <QTable
-    :rows="rows"
-    :columns="columns"
-    :row-key="rowKey"
-    :loading="loading"
-    :filter="filter"
-    :flat="flat"
-    :bordered="bordered"
-    :dense="dense"
+  <q-table
+    v-bind="props"
     :pagination="{ rowsPerPage: 0 }"
   >
     <!-- Прокидываем все слоты родителя в QTable (включая named: body-cell-*, top, bottom, и т.д.) -->
@@ -56,5 +65,5 @@ withDefaults(
         v-bind="slotData || {}"
       />
     </template>
-  </QTable>
+  </q-table>
 </template>

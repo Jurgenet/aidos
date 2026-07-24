@@ -1,11 +1,13 @@
 /**
- * Поле ввода — `UiInput`. Обёртка над Quasar QInput с дефолтами mq
- * (`outlined`, `dense`), v-model через `defineModel`.
+ * Components
+ */
+
+/**
+ * Базовое поле ввода
  */
 export { default as UiInput } from './input/index.vue'
 
 /**
- * Чекбокс — `UiCheckbox`. Обёртка над Quasar QCheckbox с дефолтом `dense`,
- * v-model через `defineModel<boolean>()`.
+ * Базовый чекбокс
  */
 export { default as UiCheckbox } from './checkbox/index.vue'

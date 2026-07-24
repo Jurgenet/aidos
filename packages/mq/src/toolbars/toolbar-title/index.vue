@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { QToolbarTitle } from 'quasar'
+/**
+ * Заголовок тулбара
+ */
 
 defineOptions({ name: 'UiToolbarTitle' })
 
-/**
- * Заголовок тулбара. Обёртка над Quasar QToolbarTitle.
- * Прокидывает слот для кастомного содержимого заголовка.
- */
 withDefaults(
   defineProps<{}>(),
   {},
@@ -14,7 +12,7 @@ withDefaults(
 </script>
 
 <template>
-  <QToolbarTitle>
+  <q-toolbar-title>
     <slot />
-  </QToolbarTitle>
+  </q-toolbar-title>
 </template>

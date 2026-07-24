@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { QToolbar } from 'quasar'
+/**
+ * Базовый Тулбар
+ */
+
 import { UiToolbarTitle } from '../index.js'
 
 defineOptions({ name: 'UiToolbar' })
 
-/**
- * Тулбар. Обёртка над Quasar QToolbar.
- * По умолчанию рендерит заголовок `title` и версию `version`,
- * а также пробрасывает слот для действий слева/справа.
- */
 withDefaults(
   defineProps<{
-    /** Заголовок тулбара. По умолчанию `AID`. */
+    /**
+     * Custom
+     */
     title?: string
-    /** Версия, отображаемая в правом углу тулбара. По умолчанию `0.0.0`. */
+    // Версия, отображаемая в правом углу тулбара
     version?: string
   }>(),
   {
@@ -24,9 +24,9 @@ withDefaults(
 </script>
 
 <template>
-  <QToolbar>
+  <q-toolbar>
     <slot />
     <UiToolbarTitle>{{title}}</UiToolbarTitle>
     <div>v{{ version }}</div>
-  </QToolbar>
+  </q-toolbar>
 </template>
