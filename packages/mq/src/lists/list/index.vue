@@ -19,26 +19,26 @@ const props = withDefaults(
      * Content Data
      */
 
-    // Applies a separator between contained items
+    // Разделитель между элементами
     separator?: boolean
 
-    // Applies a material design-like padding on top and bottom
+    // Отступ сверху и снизу в стиле Material Design
     padding?: boolean
 
-    // HTML tag to use
+    // HTML-тег
     tag?: string
 
     /**
      * Style
      */
 
-    // Applies a default border to the component
+    // Граница компонента
     bordered?: boolean
 
-    // Dense mode; occupies less space
+    // Плотный режим; занимает меньше места
     dense?: boolean
 
-    // Notify the component that the background is a dark color
+    // Тёмный фон компонента
     dark?: boolean | null
   }>(),
   {},

@@ -10,7 +10,7 @@ const model = defineModel<string | number | null>()
 withDefaults(
   defineProps<{
     /**
-     * Data
+     * Content Data
      */
 
     modelValue?: string | number | null
@@ -29,7 +29,7 @@ withDefaults(
     type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'
 
     /**
-     * Styles
+     * Style
      */
 
     // Заблокировать ввод и клики по полю

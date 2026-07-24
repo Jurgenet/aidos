@@ -10,7 +10,7 @@ const model = defineModel<boolean>()
 withDefaults(
   defineProps<{
     /**
-     * Data
+     * Content Data
      */
 
     modelValue?: boolean

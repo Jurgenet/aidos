@@ -11,7 +11,7 @@ defineOptions({ name: 'UiTable' })
 const props = withDefaults(
   defineProps<{
     /**
-     * Data
+     * Content Data
      */
 
     // Массив строк данных
@@ -29,7 +29,7 @@ const props = withDefaults(
     filter?: string
 
     /**
-     * Styles
+     * Style
      */
 
     // Состояние загрузки — показывает индикатор поверх таблицы

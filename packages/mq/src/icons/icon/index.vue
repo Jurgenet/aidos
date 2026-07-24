@@ -10,7 +10,7 @@ defineOptions({ name: 'UiIcon' })
 const props = withDefaults(
   defineProps<{
     /**
-     * Data
+     * Content Data
      */
     name?: string
   }>(),

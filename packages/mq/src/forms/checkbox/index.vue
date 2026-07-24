@@ -10,7 +10,7 @@ const model = defineModel<boolean>()
 withDefaults(
   defineProps<{
     /**
-     * Data
+     * Content Data
      */
     modelValue?: boolean
 
@@ -18,7 +18,7 @@ withDefaults(
     label?: string
 
     /**
-     * Styles
+     * Style
      */
     disable?: boolean
   }>(),

@@ -11,20 +11,20 @@ const props = withDefaults(
      * Content Data
      */
 
-    // Renders an overline label
+    // Метка над основным текстом
     overline?: boolean
 
-    // Renders a caption label
+    // Подпись
     caption?: boolean
 
-    // Renders a header label
+    // Заголовок
     header?: boolean
 
     /**
      * Behavior
      */
 
-     // Apply ellipsis when there's not enough space to render on the specified number of lines;
+     // Многоточие при нехватке места для отображения на заданном количестве строк
     lines?: number | string
   }>(),
   {
