@@ -10,6 +10,7 @@
   "type": "module",
   "exports": {
     "./buttons": "./src/buttons/index.ts",
+    "./drawers": "./src/drawers/index.ts",
     "./forms": "./src/forms/index.ts",
     "./tables": "./src/tables/index.ts",
     "./toolbars": "./src/toolbars/index.ts"
