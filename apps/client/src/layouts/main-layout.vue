@@ -5,9 +5,9 @@ import { version } from '../../package.json'
 import { UiLayout } from '@aid/mq/layouts'
 import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
-import { UiDrawer } from '@aid/mq/drawers'
-import { UiList, UiListItemSection } from '@aid/mq/lists'
-import { UiIcon, iconNames } from '@aid/mq/icons'
+import { UiDrawer, UiDrawerLink } from '@aid/mq/drawers'
+import { UiList, UiListItem, UiListItemSection } from '@aid/mq/lists'
+import { iconNames } from '@aid/mq/icons'
 
 import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
 
@@ -39,69 +39,47 @@ appUiSettingsStore.$subscribe((mutation, state) => {
 
     <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
       <UiList topic="Навигация">
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.home"
           to="/"
-          exact
-        >
-          <UiListItemSection :icon="iconNames.home" />
-          <UiListItemSection label="Главная" />
-        </q-item>
+          label="Главная"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.monitorHeart"
           to="/health"
-        >
-          <UiListItemSection :icon="iconNames.monitorHeart" />
-          <UiListItemSection label="Health" />
-        </q-item>
+          label="Health"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.info"
           to="/about"
-        >
-          <UiListItemSection :icon="iconNames.info" />
-          <UiListItemSection label="О проекте" />
-        </q-item>
+          label="О проекте"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.people"
           to="/user"
-        >
-          <UiListItemSection :icon="iconNames.people" />
-          <UiListItemSection label="Пользователи" />
-        </q-item>
+          label="Пользователи"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.key"
           to="/account"
-        >
-          <UiListItemSection :icon="iconNames.key" />
-          <UiListItemSection label="Аккаунты" />
-        </q-item>
+          label="Аккаунты"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.stickyNote2"
           to="/note"
-        >
-          <UiListItemSection :icon="iconNames.stickyNote2" />
-          <UiListItemSection label="Заметки" />
-        </q-item>
+          label="Заметки"
+        />
 
-        <q-item
-          clickable
-          v-ripple
+        <UiDrawerLink
+          :icon="iconNames.devices"
           to="/device"
-        >
-          <UiListItemSection :icon="iconNames.devices" />
-          <UiListItemSection label="Устройства" />
-        </q-item>
+          label="Устройства"
+        />
       </UiList>
     </UiDrawer>
 
