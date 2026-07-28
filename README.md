@@ -72,7 +72,7 @@ apps/server/
 
 ### Backup (mgob)
 
-Сервис `mgob` в `compose.yaml` (контейнер `aid-mgob`) автоматически дампит базу `aid` каждые 6 часов. Архивы — в named volume `aid-mongo-backups`. UI и API — `http://localhost:8090` (только localhost, без auth). План и команды восстановления — в [infra/mgob/README.md](infra/mgob/README.md). Подробности и обоснование — ADR-0011.
+Сервис `mgob` в `compose.yaml` (контейнер `aid-mgob`) автоматически дампит базу `aid` каждые 6 часов. Архивы — в named volume `aid-mongo-backups`. UI и API — `http://localhost:8090` (только localhost, без auth). Полная инструкция (бэкап, restore, статистика) — в [docs/MGOB.md](docs/MGOB.md). Обоснование выбора — [ADR-0011](docs/ADR.md).
 
 ## Packages
 
