@@ -12,6 +12,8 @@
 #   caddy   — единая точка входа на :80/:443, авто-HTTPS для localhost,
 #             проксирует /api/* и статику
 #   mongo   — MongoDB 8, данные в named volume (живут между перезапусками)
+#   mgob    — агент бэкапов Mongo (maxisam/mgob:1.12), архивы в named volume,
+#             UI/API на :8090 (только localhost, без auth)
 #   server  — наш Express-бэкенд из apps/server
 #   client  — Vue-фронтенд из apps/client (Vite dev-сервер)
 #
@@ -155,6 +157,33 @@ services:
     depends_on:
       - server
 
+  # -----------------------------------------------------------------------
+  # Backup agent — mgob (maxisam/mgob:1.12, форк активного stefanprodan/mgob)
+  # -----------------------------------------------------------------------
+  # Web UI и HTTP API на :8090 — только с localhost, без TLS и без auth.
+  # В production за прокси не выставлять. План бэкапа — infra/mgob/config/aid.yaml
+  # (имя файла == plan ID, без пробелов и спецсимволов).
+  #
+  # Архивы mongodump лежат в named volume `aid-mongo-backups` (объявлен внизу).
+  # Cron и retention настраиваются в YAML-плане. Восстановление — `mongorestore`
+  # (см. infra/mgob/README.md).
+  #
+  # Совместимость: официальная матрица maxisam/mgob — MongoDB 7.0, но встроенный
+  # mongodump 7.0 совместим с 8.x по wire-протоколу. Проверено вживую при
+  # первом запуске (см. ADR-0011).
+  mgob:
+    image: maxisam/mgob:1.12
+    container_name: aid-mgob
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./infra/mgob/config:/config:ro
+      - mongo-backups:/storage
+    depends_on:
+      mongo:
+        condition: service_healthy
+
 # -----------------------------------------------------------------------
 # Named volumes
 # -----------------------------------------------------------------------
@@ -162,14 +191,22 @@ services:
 # тома на хосте, чтобы он был предсказуемым (иначе compose генерирует
 # имя вида `aid_mongo-data`).
 #
+# `mongo-backups` — архивы бэкапов mgob (gzip). Имя фиксировано аналогично.
+# ⚠️ Очищать вручную только если понимаешь последствия: теряются все
+#   исторические точки восстановления.
+#
 # Полезные команды:
-#   docker volume ls                       # список всех томов
-#   docker volume inspect aid-mongo-data   # где физически лежит
-#   docker compose down -v                 # ⚠️ удалит И данные тоже
-#   docker volume rm aid-mongo-data        # ручная очистка
+#   docker volume ls                              # список всех томов
+#   docker volume inspect aid-mongo-data          # где физически лежит
+#   docker volume inspect aid-mongo-backups       # где физически лежат бэкапы
+#   docker compose down -v                        # ⚠️ удалит И данные тоже
+#   docker volume rm aid-mongo-data               # ручная очистка данных
+#   docker volume rm aid-mongo-backups            # ручная очистка бэкапов
 volumes:
   mongo-data:
     name: aid-mongo-data
+  mongo-backups:
+    name: aid-mongo-backups
   caddy_data:
     name: aid-caddy-data
   caddy_config:

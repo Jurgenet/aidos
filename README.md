@@ -70,6 +70,10 @@ apps/server/
         └── not-found.ts      # 404 catch-all → HttpError(404)
 ```
 
+### Backup (mgob)
+
+Сервис `mgob` в `compose.yaml` (контейнер `aid-mgob`) автоматически дампит базу `aid` каждые 6 часов. Архивы — в named volume `aid-mongo-backups`. UI и API — `http://localhost:8090` (только localhost, без auth). План и команды восстановления — в [infra/mgob/README.md](infra/mgob/README.md). Подробности и обоснование — ADR-0011.
+
 ## Packages
 
 ### MQ (mod quasar)
@@ -107,7 +111,7 @@ Quasar2 UI-KIT Базовых компонентов
 12. ~~Добавить сущность Note (title, content, links, createdAt, updatedAt, tags: string[], isPinned)~~
 13. ~~Добавить сущность Device (title, image, model, vendor, location, order, createdAt, updatedAt, tags: string[], description, isPinned, isZipped, isBroken)~~
 14. ~~Добавить сущность Order (date, group, title, price, amount, vendor, seller, link, tags, description)~~
-15. Добавить Бэкап/Рестор базы данных (mgob?)
+15. ~~Добавить Бэкап/Рестор базы данных (mgob?)~~
 16. Изучить необходимость добавления плагина `eslint-plugin-vue`
 17. Данные резюме, места работы
 18. Загрузка/Хранение картинок, файлов

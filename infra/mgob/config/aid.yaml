@@ -1,0 +1,19 @@
+# План бэкапа для AID.
+# Имя файла = plan ID в API mgob. Меняешь имя — меняется URL:
+#   POST /backup/aid, GET /status/aid, /storage/aid/.
+# Документация: https://github.com/maxisam/mgob
+
+scheduler:
+  # Каждые 6 часов. Для dev-режима достаточно; в проде уменьшить или вынести в env.
+  cron: '0 */6 * * *'
+  # Сколько архивов держать локально. 14 × 6h = ~3.5 дня истории.
+  retention: 14
+  # Таймаут mongodump в минутах. aid сейчас весит десятки KB, 60 — с запасом.
+  timeout: 60
+
+target:
+  # Внутри compose-сети Mongo доступна по имени сервиса.
+  host: 'mongo'
+  port: 27017
+  # Только база aid. Оставлять пустым = дамп всех БД, нам не нужно.
+  database: 'aid'
