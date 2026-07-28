@@ -112,30 +112,25 @@ async function onTrigger(): Promise<void> {
 }
 
 async function onRestore(filename: string): Promise<void> {
-  $q.dialog({
-    title: 'Восстановить?',
-    message: `Все текущие данные в базе будут заменены данными из архива ${filename}. Это необратимо.`,
-    cancel: { label: 'Отмена', flat: true, color: 'grey' },
-    ok: { label: 'Восстановить', color: 'negative' },
-    persistent: true,
-  }).onOk(async () => {
-    restoring.value = filename
-    error.value = null
-    try {
-      const r = await fetch(`/api/backups/${encodeURIComponent(filename)}/restore`, { method: 'POST' })
-      if (!r.ok) {
-        const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
-        throw new Error(data.error?.message ?? `HTTP ${r.status}`)
-      }
-      $q.notify({ type: 'positive', message: `Восстановлено из ${filename}` })
-      await loadAll()
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : String(e)
-      $q.notify({ type: 'negative', message: `Не удалось: ${error.value}` })
-    } finally {
-      restoring.value = null
+  if (!confirm(`Восстановить данные из ${filename}?\n\nВсе текущие коллекции будут пересозданы данными из архива. Это необратимо.`)) {
+    return
+  }
+  restoring.value = filename
+  error.value = null
+  try {
+    const r = await fetch(`/api/backups/${encodeURIComponent(filename)}/restore`, { method: 'POST' })
+    if (!r.ok) {
+      const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
+      throw new Error(data.error?.message ?? `HTTP ${r.status}`)
     }
-  })
+    $q.notify({ type: 'positive', message: `Восстановлено из ${filename}` })
+    await loadAll()
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : String(e)
+    $q.notify({ type: 'negative', message: `Не удалось: ${error.value}` })
+  } finally {
+    restoring.value = null
+  }
 }
 
 onMounted(loadAll)
