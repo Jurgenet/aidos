@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
-import { version } from '../../package.json'
-
 import { UiLayout } from '@aid/mq/layouts'
 import { UiPageContainer } from '@aid/mq/pages'
-import { UiHeader } from '@aid/mq/headers'
-import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer, UiDrawerLink } from '@aid/mq/drawers'
 import { UiList } from '@aid/mq/lists'
 import { iconNames } from '@aid/mq/icons'
+
+import AppHeader from '@/components/app-header/index.vue'
 
 import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
 
@@ -22,21 +20,7 @@ appUiSettingsStore.$subscribe((mutation, state) => {
 
 <template>
   <UiLayout>
-    <UiHeader>
-      <UiToolbar
-        :version="version"
-        title="AID"
-      >
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="appUiSettingsStore.toggleDrawerLeft"
-        />
-      </UiToolbar>
-    </UiHeader>
+    <AppHeader />
 
     <UiDrawer v-model="appUiSettingsStore.isOpenDrawerLeft">
       <UiList topic="Навигация">
