@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import { OrderModel } from './model.js'
 import { HttpError } from '../../shared/http-error/index.js'
+import { recordLog } from '../../log/server/index.js'
 import type { Order, CreateOrderInput, UpdateOrderInput } from '../types/index.js'
 
 /** 404 — заказ не найден по id. */
@@ -58,23 +59,43 @@ export const orderService = {
 
   async create(input: CreateOrderInput): Promise<Order> {
     const created = await OrderModel.create(input)
-    return toOrder(created.toObject())
+    const order = toOrder(created.toObject())
+    await recordLog({ entity: 'order', action: 'create', documentId: order.id, after: order })
+    return order
   },
 
   async update(id: string, input: UpdateOrderInput): Promise<Order> {
     if (!Types.ObjectId.isValid(id)) {
       throw new OrderNotFoundError(id)
     }
-    const doc = await OrderModel.findByIdAndUpdate(id, input, { new: true }).lean()
-    if (!doc) throw new OrderNotFoundError(id)
-    return toOrder(doc)
+    const beforeDoc = await OrderModel.findById(id).lean()
+    if (!beforeDoc) throw new OrderNotFoundError(id)
+    const afterDoc = await OrderModel.findByIdAndUpdate(id, input, { new: true }).lean()
+    if (!afterDoc) throw new OrderNotFoundError(id)
+    const after = toOrder(afterDoc)
+    await recordLog({
+      entity: 'order',
+      action: 'update',
+      documentId: id,
+      before: toOrder(beforeDoc),
+      after,
+    })
+    return after
   },
 
   async delete(id: string): Promise<void> {
     if (!Types.ObjectId.isValid(id)) {
       throw new OrderNotFoundError(id)
     }
+    const beforeDoc = await OrderModel.findById(id).lean()
+    if (!beforeDoc) throw new OrderNotFoundError(id)
     const result = await OrderModel.findByIdAndDelete(id)
     if (!result) throw new OrderNotFoundError(id)
+    await recordLog({
+      entity: 'order',
+      action: 'delete',
+      documentId: id,
+      before: toOrder(beforeDoc),
+    })
   },
 }

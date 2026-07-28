@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import { NoteModel } from './model.js'
 import { HttpError } from '../../shared/http-error/index.js'
+import { recordLog } from '../../log/server/index.js'
 import type { Note, CreateNoteInput, UpdateNoteInput } from '../types/index.js'
 
 /** 404 — заметка не найдена по id (или id невалидный ObjectId). */
@@ -51,23 +52,43 @@ export const noteService = {
 
   async create(input: CreateNoteInput): Promise<Note> {
     const created = await NoteModel.create(input)
-    return toNote(created.toObject())
+    const note = toNote(created.toObject())
+    await recordLog({ entity: 'note', action: 'create', documentId: note.id, after: note })
+    return note
   },
 
   async update(id: string, input: UpdateNoteInput): Promise<Note> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NoteNotFoundError(id)
     }
-    const doc = await NoteModel.findByIdAndUpdate(id, input, { new: true }).lean()
-    if (!doc) throw new NoteNotFoundError(id)
-    return toNote(doc)
+    const beforeDoc = await NoteModel.findById(id).lean()
+    if (!beforeDoc) throw new NoteNotFoundError(id)
+    const afterDoc = await NoteModel.findByIdAndUpdate(id, input, { new: true }).lean()
+    if (!afterDoc) throw new NoteNotFoundError(id)
+    const after = toNote(afterDoc)
+    await recordLog({
+      entity: 'note',
+      action: 'update',
+      documentId: id,
+      before: toNote(beforeDoc),
+      after,
+    })
+    return after
   },
 
   async delete(id: string): Promise<void> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NoteNotFoundError(id)
     }
+    const beforeDoc = await NoteModel.findById(id).lean()
+    if (!beforeDoc) throw new NoteNotFoundError(id)
     const result = await NoteModel.findByIdAndDelete(id)
     if (!result) throw new NoteNotFoundError(id)
+    await recordLog({
+      entity: 'note',
+      action: 'delete',
+      documentId: id,
+      before: toNote(beforeDoc),
+    })
   },
 }

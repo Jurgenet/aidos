@@ -23,6 +23,8 @@ export default defineConfig({
         'device/types': fileURLToPath(new URL('./src/device/types/index.ts', import.meta.url)),
         'device/server': fileURLToPath(new URL('./src/device/server/index.ts', import.meta.url)),
         'device/client': fileURLToPath(new URL('./src/device/client/index.ts', import.meta.url)),
+        'log/types': fileURLToPath(new URL('./src/log/types/index.ts', import.meta.url)),
+        'log/server': fileURLToPath(new URL('./src/log/server/index.ts', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}/index.js`,

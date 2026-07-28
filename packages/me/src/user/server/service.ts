@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import { UserModel } from './model.js'
 import { HttpError } from '../../shared/http-error/index.js'
+import { recordLog } from '../../log/server/index.js'
 import type { User, CreateUserInput, UpdateUserInput, UserRole } from '../types/index.js'
 
 /** 404 — пользователь не найден по id (или id невалидный ObjectId). */
@@ -60,23 +61,43 @@ export const userService = {
     const existing = await UserModel.findOne({ email: input.email }).lean()
     if (existing) throw new UserAlreadyExistsError(input.email)
     const created = await UserModel.create(input)
-    return toUser(created.toObject())
+    const user = toUser(created.toObject())
+    await recordLog({ entity: 'user', action: 'create', documentId: user.id, after: user })
+    return user
   },
 
   async update(id: string, input: UpdateUserInput): Promise<User> {
     if (!Types.ObjectId.isValid(id)) {
       throw new UserNotFoundError(id)
     }
-    const doc = await UserModel.findByIdAndUpdate(id, input, { new: true }).lean()
-    if (!doc) throw new UserNotFoundError(id)
-    return toUser(doc)
+    const beforeDoc = await UserModel.findById(id).lean()
+    if (!beforeDoc) throw new UserNotFoundError(id)
+    const afterDoc = await UserModel.findByIdAndUpdate(id, input, { new: true }).lean()
+    if (!afterDoc) throw new UserNotFoundError(id)
+    const after = toUser(afterDoc)
+    await recordLog({
+      entity: 'user',
+      action: 'update',
+      documentId: id,
+      before: toUser(beforeDoc),
+      after,
+    })
+    return after
   },
 
   async delete(id: string): Promise<void> {
     if (!Types.ObjectId.isValid(id)) {
       throw new UserNotFoundError(id)
     }
+    const beforeDoc = await UserModel.findById(id).lean()
+    if (!beforeDoc) throw new UserNotFoundError(id)
     const result = await UserModel.findByIdAndDelete(id)
     if (!result) throw new UserNotFoundError(id)
+    await recordLog({
+      entity: 'user',
+      action: 'delete',
+      documentId: id,
+      before: toUser(beforeDoc),
+    })
   },
 }

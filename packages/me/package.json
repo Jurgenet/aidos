@@ -56,6 +56,14 @@
     "./device/client": {
       "types": "./dist/device/client/index.d.ts",
       "import": "./dist/device/client/index.js"
+    },
+    "./log/types": {
+      "types": "./dist/log/types/index.d.ts",
+      "import": "./dist/log/types/index.js"
+    },
+    "./log/server": {
+      "types": "./dist/log/server/index.d.ts",
+      "import": "./dist/log/server/index.js"
     }
   },
   "scripts": {

@@ -12,4 +12,6 @@ export const iconNames = {
   cloudDownload: 'cloud_download',
   restore: 'restore',
   refresh: 'refresh',
+  history: 'history',
+  historyEdu: 'history_edu',
 } as const

@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import { DeviceModel } from './model.js'
 import { HttpError } from '../../shared/http-error/index.js'
+import { recordLog } from '../../log/server/index.js'
 import type { Device, CreateDeviceInput, UpdateDeviceInput } from '../types/index.js'
 
 /** 404 — устройство не найдено по id. */
@@ -57,23 +58,43 @@ export const deviceService = {
 
   async create(input: CreateDeviceInput): Promise<Device> {
     const created = await DeviceModel.create(input)
-    return toDevice(created.toObject())
+    const device = toDevice(created.toObject())
+    await recordLog({ entity: 'device', action: 'create', documentId: device.id, after: device })
+    return device
   },
 
   async update(id: string, input: UpdateDeviceInput): Promise<Device> {
     if (!Types.ObjectId.isValid(id)) {
       throw new DeviceNotFoundError(id)
     }
-    const doc = await DeviceModel.findByIdAndUpdate(id, input, { new: true }).lean()
-    if (!doc) throw new DeviceNotFoundError(id)
-    return toDevice(doc)
+    const beforeDoc = await DeviceModel.findById(id).lean()
+    if (!beforeDoc) throw new DeviceNotFoundError(id)
+    const afterDoc = await DeviceModel.findByIdAndUpdate(id, input, { new: true }).lean()
+    if (!afterDoc) throw new DeviceNotFoundError(id)
+    const after = toDevice(afterDoc)
+    await recordLog({
+      entity: 'device',
+      action: 'update',
+      documentId: id,
+      before: toDevice(beforeDoc),
+      after,
+    })
+    return after
   },
 
   async delete(id: string): Promise<void> {
     if (!Types.ObjectId.isValid(id)) {
       throw new DeviceNotFoundError(id)
     }
+    const beforeDoc = await DeviceModel.findById(id).lean()
+    if (!beforeDoc) throw new DeviceNotFoundError(id)
     const result = await DeviceModel.findByIdAndDelete(id)
     if (!result) throw new DeviceNotFoundError(id)
+    await recordLog({
+      entity: 'device',
+      action: 'delete',
+      documentId: id,
+      before: toDevice(beforeDoc),
+    })
   },
 }

@@ -13,6 +13,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'note', name: 'note', component: () => import('@/pages/note/index.vue') },
       { path: 'device', name: 'device', component: () => import('@/pages/device/index.vue') },
       { path: 'backup', name: 'backup', component: () => import('@/pages/backup/index.vue') },
+      { path: 'log', name: 'log', component: () => import('@/pages/log/index.vue') },
     ],
   },
   {

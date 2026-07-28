@@ -71,6 +71,12 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           to="/backup"
           label="Бэкапы"
         />
+
+        <UiDrawerLink
+          :icon="iconNames.history"
+          to="/log"
+          label="История"
+        />
       </UiList>
     </UiDrawer>
 
