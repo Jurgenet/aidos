@@ -3,10 +3,11 @@
 import { version } from '../../package.json'
 
 import { UiLayout } from '@aid/mq/layouts'
+import { UiPageContainer } from '@aid/mq/pages'
 import { UiHeader } from '@aid/mq/headers'
 import { UiToolbar } from '@aid/mq/toolbars'
 import { UiDrawer, UiDrawerLink } from '@aid/mq/drawers'
-import { UiList, UiListItem, UiListItemSection } from '@aid/mq/lists'
+import { UiList } from '@aid/mq/lists'
 import { iconNames } from '@aid/mq/icons'
 
 import { useAppUiSettingsStore } from '@/stores/app-ui-settings'
@@ -83,8 +84,8 @@ appUiSettingsStore.$subscribe((mutation, state) => {
       </UiList>
     </UiDrawer>
 
-    <q-page-container>
+    <UiPageContainer>
       <router-view />
-    </q-page-container>
+    </UiPageContainer>
   </UiLayout>
 </template>

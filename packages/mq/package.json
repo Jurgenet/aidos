@@ -16,6 +16,7 @@
     "./icons": "./src/icons/index.ts",
     "./layouts": "./src/layouts/index.ts",
     "./lists": "./src/lists/index.ts",
+    "./pages": "./src/pages/index.ts",
     "./tables": "./src/tables/index.ts",
     "./toolbars": "./src/toolbars/index.ts"
   },
