@@ -5,19 +5,19 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('@/layouts/main-layout.vue'),
     children: [
-      { path: '', name: 'home', component: () => import('@/pages/index-page.vue') },
-      { path: 'health', name: 'health', component: () => import('@/pages/health-page.vue') },
-      { path: 'about', name: 'about', component: () => import('@/pages/about-page.vue') },
-      { path: 'user', name: 'user', component: () => import('@/pages/user-page.vue') },
-      { path: 'account', name: 'account', component: () => import('@/pages/account-page.vue') },
-      { path: 'note', name: 'note', component: () => import('@/pages/note-page.vue') },
-      { path: 'device', name: 'device', component: () => import('@/pages/device-page.vue') },
+      { path: '', name: 'home', component: () => import('@/pages/index/index.vue') },
+      { path: 'health', name: 'health', component: () => import('@/pages/health/index.vue') },
+      { path: 'about', name: 'about', component: () => import('@/pages/about/index.vue') },
+      { path: 'user', name: 'user', component: () => import('@/pages/user/index.vue') },
+      { path: 'account', name: 'account', component: () => import('@/pages/account/index.vue') },
+      { path: 'note', name: 'note', component: () => import('@/pages/note/index.vue') },
+      { path: 'device', name: 'device', component: () => import('@/pages/device/index.vue') },
     ],
   },
   {
     path: '/:catchAll(.*)*',
     name: 'not-found',
-    component: () => import('@/pages/error-not-found.vue'),
+    component: () => import('@/pages/error-not-found/index.vue'),
   },
 ]
 
