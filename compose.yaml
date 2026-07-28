@@ -121,12 +121,19 @@ services:
       # свой /storage. Server читает напрямую (list/download), restore
       # делает mgob через собственный mount.
       BACKUPS_DIR: /backups
+      # Telegram-стейт (chat_id, enabled) — RW, отдельный mount, чтобы
+      # /backups оставался read-only. TELEGRAM_BOT_TOKEN и остальные
+      # TELEGRAM_* читаются из process.env (см. .env.example) — если
+      # токен не задан, нотификатор выключен.
+      TELEGRAM_STATE_DIR: /data
     volumes:
       # :ro — read-only, чтобы контейнер случайно не затёр хост-исходники.
       - ./apps/server/src:/app/apps/server/src:ro
       - ./packages:/app/packages:ro
       # Архивы бэкапов — read-only на хосте, чтобы server не мог их побить.
       - ./.data/mongo-backups:/backups:ro
+      # Telegram-стейт: read-write. Сюда пишется chat_id и runtime enabled.
+      - ./.data:/data
     depends_on:
       # Не стартовать, пока Mongo не пройдёт healthcheck.
       mongo:

@@ -54,6 +54,9 @@ $RECYCLE.BIN/
 # .log рядом с архивами — служебный stdout/stderr mongodump, в репо не нужен.
 # Если захочешь локально не коммитить — добавь сюда .data/mongo-backups/**/*.
 .data/mongo-backups/**/*.log
+# Telegram-нотификатор: chat_id и runtime-стейт (enabled). Локальный,
+# машино-зависимый, в репо не нужен.
+.data/telegram-state.json
 data/
 *.sqlite
 *.sqlite3

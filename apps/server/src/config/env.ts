@@ -46,6 +46,23 @@ export const env = {
   BACKUPS_DIR: readString('BACKUPS_DIR', '.data/mongo-backups'),
   // ID плана в mgob. Соответствует имени файла infra/mgob/config/<PLAN>.yaml.
   BACKUP_PLAN_ID: readString('BACKUP_PLAN_ID', 'aid'),
+  // Telegram-нотификатор: шлёт в бот новые записи из коллекции logs.
+  // Если TELEGRAM_BOT_TOKEN пустой — нотификатор выключен, остальные
+  // TELEGRAM_* игнорируются. См. docs/TELEGRAM.md для настройки.
+  TELEGRAM_BOT_TOKEN: readString('TELEGRAM_BOT_TOKEN', ''),
+  // Фиксированный chat_id (если задан — /start перезаписывать нельзя).
+  // Если пустой — /start от любого юзера перехватывает chat_id,
+  // последующие /start перезатирают (один подписчик).
+  TELEGRAM_CHAT_ID: readString('TELEGRAM_CHAT_ID', ''),
+  // Стартовое состояние «включён/выключен». Переключается рантайм
+  // командами /on /off и сохраняется в .data/telegram-state.json.
+  TELEGRAM_ENABLED: readString('TELEGRAM_ENABLED', 'true') === 'true',
+  // Интервал поллинга logs-коллекции (мс). Long-poll getUpdates
+  // для команд работает отдельно (timeout=20s в getUpdates).
+  TELEGRAM_POLL_INTERVAL_MS: readNumber('TELEGRAM_POLL_INTERVAL_MS', 5_000, 500, 5 * 60_000),
+  // Каталог для runtime-стейта нотификатора (chat_id, enabled). В compose
+  // маунтится read-write (BACKUPS_DIR маунтится read-only отдельно).
+  TELEGRAM_STATE_DIR: readString('TELEGRAM_STATE_DIR', '.data'),
 } as const
 
 export type Env = typeof env
