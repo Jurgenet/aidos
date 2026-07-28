@@ -123,9 +123,15 @@ services:
       BACKUPS_DIR: /backups
       # Telegram-стейт (chat_id, enabled) — RW, отдельный mount, чтобы
       # /backups оставался read-only. TELEGRAM_BOT_TOKEN и остальные
-      # TELEGRAM_* читаются из process.env (см. .env.example) — если
-      # токен не задан, нотификатор выключен.
+      # TELEGRAM_* берутся из .env через env_file ниже — если файла
+      # нет, .env.example как шаблон, фича выключена по дефолту.
       TELEGRAM_STATE_DIR: /data
+    env_file:
+      # Подтягивает переменные из корневого .env (см. .env.example).
+      # `required: false` — если файла нет, compose не падает, нотификатор
+      # остаётся выключенным (TELEGRAM_BOT_TOKEN пустой по дефолту).
+      - path: .env
+        required: false
     volumes:
       # :ro — read-only, чтобы контейнер случайно не затёр хост-исходники.
       - ./apps/server/src:/app/apps/server/src:ro
