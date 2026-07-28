@@ -1,7 +1,7 @@
 ---
 description: Внешние доки и зависимости — ищет официальную документацию, инспектирует установленные пакеты, сверяет локальный код с upstream
 mode: subagent
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/mimo-v2.5
 temperature: 0.1
 permission:
   read: allow
