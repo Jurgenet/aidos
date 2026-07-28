@@ -115,14 +115,25 @@ services:
       MONGO_DB_NAME: aid
       NODE_ENV: development
       LOG_LEVEL: info
+      # mgob внутри compose-сети доступен по имени сервиса.
+      MGOB_URL: http://mgob:8090
+      # Bind-mount с архивами — тот же каталог, что видит mgob через
+      # свой /storage. Server читает напрямую (list/download), restore
+      # делает mgob через собственный mount.
+      BACKUPS_DIR: /backups
     volumes:
       # :ro — read-only, чтобы контейнер случайно не затёр хост-исходники.
       - ./apps/server/src:/app/apps/server/src:ro
       - ./packages:/app/packages:ro
+      # Архивы бэкапов — read-only на хосте, чтобы server не мог их побить.
+      - ./.data/mongo-backups:/backups:ro
     depends_on:
       # Не стартовать, пока Mongo не пройдёт healthcheck.
       mongo:
         condition: service_healthy
+      # И пока mgob не поднимется (нужен для trigger/status/restore).
+      mgob:
+        condition: service_started
 
   # -----------------------------------------------------------------------
   # Client — Vue 3 + Vite dev-сервер

@@ -5,7 +5,7 @@
 # Source примонтирован из хоста (см. compose.yaml `volumes:`), так что
 # правки в src/ видны сразу без пересборки.
 
-FROM node:24-alpine
+FROM node:24-bookworm-slim
 
 WORKDIR /app
 
@@ -23,7 +23,22 @@ COPY packages/me/package.json       ./packages/me/
 COPY packages/mq/package.json       ./packages/mq/
 COPY packages/mu/package.json       ./packages/mu/
 
+# Системные зависимости mongorestore (см. блок 1.5 ниже): libgssapi_krb5,
+# libsasl2. Ставим ДО pnpm install, чтобы кэшировалось отдельно от src.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgssapi-krb5-2 \
+    libsasl2-2 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pnpm install --frozen-lockfile
+
+# --- 1.5. mongorestore для server ---
+# Server шелмит mongorestore из endpoint /api/backups/:file/restore
+# (mgob 2.0.28 /restore падает с nil pointer, см. ADR-0011 и комментарий
+# в apps/server/src/routes/backups.ts). mongo:8 — debian-based, glibc,
+# совместим с нашей новой базой bookworm-slim. Alpine-вариант не подходит
+# (musl vs glibc), alpine-пакета mongodb-tools в репах Alpine 3.24 нет.
+COPY --from=mongo:8 /usr/bin/mongorestore /usr/local/bin/mongorestore
 
 # --- 2. Копируем исходники ---
 # В compose.yaml mount'ы перекроют только src/, остальное останется

@@ -65,6 +65,12 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           to="/device"
           label="Устройства"
         />
+
+        <UiDrawerLink
+          :icon="iconNames.backup"
+          to="/backup"
+          label="Бэкапы"
+        />
       </UiList>
     </UiDrawer>
 

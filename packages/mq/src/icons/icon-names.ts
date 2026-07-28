@@ -8,4 +8,8 @@ export const iconNames = {
   stickyNote2: 'sticky_note_2',
   devices: 'devices',
   menu: 'menu',
+  backup: 'backup',
+  cloudDownload: 'cloud_download',
+  restore: 'restore',
+  refresh: 'refresh',
 } as const

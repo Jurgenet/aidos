@@ -38,6 +38,14 @@ export const env = {
   MONGO_URI: readString('MONGO_URI', 'mongodb://localhost:27017/aid'),
   MONGO_DB_NAME: readString('MONGO_DB_NAME', 'aid'),
   SHUTDOWN_TIMEOUT_MS: readNumber('SHUTDOWN_TIMEOUT_MS', 10_000, 100, 5 * 60_000),
+  // URL mgob (агент бэкапов Mongo). В compose — http://mgob:8090,
+  // локально без compose — http://localhost:8090.
+  MGOB_URL: readString('MGOB_URL', 'http://localhost:8090'),
+  // Каталог с архивами бэкапов (bind-mount на .data/mongo-backups).
+  // Только для чтения — restore делает сам mgob через свой mount.
+  BACKUPS_DIR: readString('BACKUPS_DIR', '.data/mongo-backups'),
+  // ID плана в mgob. Соответствует имени файла infra/mgob/config/<PLAN>.yaml.
+  BACKUP_PLAN_ID: readString('BACKUP_PLAN_ID', 'aid'),
 } as const
 
 export type Env = typeof env
