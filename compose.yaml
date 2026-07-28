@@ -2,7 +2,7 @@
 #
 # Запуск:    docker compose up
 # Остановка: docker compose down
-# Сброс БД:  docker compose down -v        # удалит И том с данными!
+# Сброс БД:  rm -rf .data/mongo                # ⚠️ удалит данные!
 #
 # После старта открывай https://localhost (Caddy выдаст сертификат
 # автоматически через свой локальный CA). HTTP → HTTPS редирект
@@ -10,10 +10,13 @@
 #
 # Структура:
 #   caddy   — единая точка входа на :80/:443, авто-HTTPS для localhost,
-#             проксирует /api/* и статику
-#   mongo   — MongoDB 8, данные в named volume (живут между перезапусками)
-#   mgob    — агент бэкапов Mongo (maxisam/mgob:2.0.28), архивы в named volume,
-#             UI/API на :8090 (только localhost, без auth)
+#             проксирует /api/* и статику. Сертификаты в named volume
+#             (должны переживать перезапуски).
+#   mongo   — MongoDB 8, данные в bind-mount `./.data/mongo` (внутри
+#             проекта, в .gitignore)
+#   mgob    — агент бэкапов Mongo (maxisam/mgob:2.0.28), архивы в
+#             bind-mount `./.data/mongo-backups` (внутри проекта,
+#             ТРЕКАЕТСЯ в git). UI/API на :8090 (только localhost)
 #   server  — наш Express-бэкенд из apps/server
 #   client  — Vue-фронтенд из apps/client (Vite dev-сервер)
 #
@@ -57,12 +60,11 @@ services:
   # -----------------------------------------------------------------------
   # MongoDB — хранилище данных
   # -----------------------------------------------------------------------
-  # Данные лежат в named volume `aid-mongo-data` (объявлен внизу).
-  # volume управляется Docker'ом, а не bind-mount'ом:
-  #   - переживает `docker compose down` (в отличие от контейнеров)
-  #   - удаляется только через `docker compose down -v` или `docker volume rm`
-  #   - не зависит от путей на хосте
-  # При первом запуске Docker создаёт том автоматически.
+  # Данные лежат в bind-mount `./.data/mongo` (внутри проекта, в .gitignore).
+  # Bind-mount вместо named volume: данные живут рядом с кодом, видно глазами,
+  # легко бэкапить, удалять и мигрировать. Недостаток — зависят от пути проекта.
+  # Каталог должен существовать ДО первого `docker compose up` (либо создать
+  # руками, либо через `git clone` + `mkdir -p .data/mongo`).
   mongo:
     image: mongo:8
     container_name: aid-mongo
@@ -73,7 +75,7 @@ services:
       # по имени `mongo` через `MONGO_URI`.
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - ./.data/mongo:/data/db
     healthcheck:
       # Проверяем, что mongosh отвечает; сервер ждёт этой проверки
       # через `depends_on: condition: service_healthy`.
@@ -164,7 +166,11 @@ services:
   # В production за прокси не выставлять. План бэкапа — infra/mgob/config/aid.yaml
   # (имя файла == plan ID, без пробелов и спецсимволов).
   #
-  # Архивы mongodump лежат в named volume `aid-mongo-backups` (объявлен внизу).
+  # Архивы mongodump лежат в bind-mount `./.data/mongo-backups` (внутри проекта,
+  # ТРЕКАЕТСЯ в git — бэкапы версионируются вместе с кодом). Каталог должен
+  # существовать до первого запуска; `git clone` создаст его автоматически,
+  # т.к. в репо лежит `.gitkeep`.
+  #
   # Cron и retention настраиваются в YAML-плане. Восстановление — `mongorestore`
   # (см. infra/mgob/README.md).
   #
@@ -179,7 +185,7 @@ services:
       - "8090:8090"
     volumes:
       - ./infra/mgob/config:/config:ro
-      - mongo-backups:/storage
+      - ./.data/mongo-backups:/storage
     depends_on:
       mongo:
         condition: service_healthy
@@ -187,26 +193,16 @@ services:
 # -----------------------------------------------------------------------
 # Named volumes
 # -----------------------------------------------------------------------
-# `mongo-data` — данные MongoDB. `name: aid-mongo-data` фиксирует имя
-# тома на хосте, чтобы он был предсказуемым (иначе compose генерирует
-# имя вида `aid_mongo-data`).
-#
-# `mongo-backups` — архивы бэкапов mgob (gzip). Имя фиксировано аналогично.
-# ⚠️ Очищать вручную только если понимаешь последствия: теряются все
-#   исторические точки восстановления.
+# Остались только Caddy — они должны переживать `docker compose down`,
+# чтобы TLS-сертификаты не перевыпускались каждый раз. Данные Mongo и
+# бэкапы mgob переехали на bind-mounts в `.data/` (см. описание сервисов).
 #
 # Полезные команды:
 #   docker volume ls                              # список всех томов
-#   docker volume inspect aid-mongo-data          # где физически лежит
-#   docker volume inspect aid-mongo-backups       # где физически лежат бэкапы
-#   docker compose down -v                        # ⚠️ удалит И данные тоже
-#   docker volume rm aid-mongo-data               # ручная очистка данных
-#   docker volume rm aid-mongo-backups            # ручная очистка бэкапов
+#   docker volume inspect aid-caddy-data          # где физически лежит
+#   docker compose down -v                        # ⚠️ удалит И Caddy-тома тоже
+#   docker volume rm aid-caddy-data aid-caddy-config   # полная очистка Caddy
 volumes:
-  mongo-data:
-    name: aid-mongo-data
-  mongo-backups:
-    name: aid-mongo-backups
   caddy_data:
     name: aid-caddy-data
   caddy_config:

@@ -6,6 +6,7 @@
 - **Web UI / API:** <http://localhost:8090> (только localhost, без TLS и без auth)
 - **Compose-файл:** [`compose.yaml`](../compose.yaml)
 - **План:** [`infra/mgob/config/aid.yaml`](../infra/mgob/config/aid.yaml)
+- **Архивы бэкапов:** [`.data/mongo-backups/`](../.data/mongo-backups/) (внутри проекта, трекается в git)
 - **Краткая справка по структуре каталога:** [`infra/mgob/README.md`](../infra/mgob/README.md)
 - **Обоснование выбора:** [ADR-0011](ADR.md#adr-0011--бэкапы-mongodb-через-mgob-форк-maxisammgob)
 
@@ -199,42 +200,46 @@ Remove-Item .tmp\restore.gz
 
 ## Где лежат файлы
 
-Архивы живут в named volume `aid-mongo-backups`:
+Архивы лежат в каталоге **`.data/mongo-backups/`** внутри проекта (bind-mount в compose). Этот каталог **трекается в git** — каждая резервная копия коммитится отдельным коммитом или пачкой. Структура:
 
-```bash
-docker volume inspect aid-mongo-backups
-# "Mountpoint": "/var/lib/docker/volumes/aid-mongo-backups/_data"
+```
+.data/mongo-backups/
+└── aid/                  # plan ID
+    ├── aid-1785238674.gz # mongodump-архив
+    ├── aid-1785238674.log
+    ├── aid-1785240023.gz
+    └── aid-1785240023.log
 ```
 
-Заглянуть внутрь без `docker exec aid-mongo`:
+Заглянуть внутрь:
 
 ```bash
-docker run --rm -v aid-mongo-backups:/data alpine ls -lh /data/aid
-# -rw-r--r-- 1 root root 1.5K Jul 28 11:37 aid-1785238674.gz
-# -rw-r--r-- 1 root root  606 Jul 28 11:37 aid-1785238674.log
+ls -lh .data/mongo-backups/aid/
 ```
 
-Скопировать архив к себе на хост:
+Скопировать архив к себе на хост — он уже на хосте, просто `cp`:
 
 ```bash
-docker run --rm -v aid-mongo-backups:/data -v ${PWD}:/out alpine \
-  cp /data/aid/aid-1785238674.gz /out/aid-1785238674.gz
+cp .data/mongo-backups/aid/aid-1785238674.gz ./aid-restore.gz
 ```
+
+Сырые данные Mongo лежат в соседнем `.data/mongo/` (тоже bind-mount) — **в `.gitignore`**, в репо не попадают.
 
 ## Retention и очистка
 
 `retention: 14` в плане — mgob автоматически удаляет архивы старше 14-го по счёту. Чистить руками обычно не нужно.
 
-Принудительная очистка всего:
+Принудительная очистка бэкапов (на хосте, не в контейнере):
 
 ```bash
-docker volume rm aid-mongo-backups   # ⚠️ потеря всех точек восстановления
+rm -rf .data/mongo-backups/aid/*   # ⚠️ потеря всех точек восстановления
 ```
 
-Полный сброс dev-окружения (данные + бэкапы):
+Полный сброс dev-окружения (данные Mongo + бэкапы):
 
 ```bash
-docker compose down -v   # ⚠️ удалит и aid-mongo-data тоже
+docker compose down
+rm -rf .data/mongo    # ⚠️ потеря всех данных
 ```
 
 ## Troubleshooting
@@ -246,4 +251,5 @@ docker compose down -v   # ⚠️ удалит и aid-mongo-data тоже
 | Архив 0 байт или очень маленький | Сверить `database: aid` в плане с реальным именем БД (`docker exec aid-mongo mongosh --quiet --eval "db.adminCommand('listDatabases')"`) |
 | `manifest unknown` при `docker compose up` | Тег mgob в `compose.yaml` устарел. Проверить актуальные: <https://hub.docker.com/r/maxisam/mgob/tags> |
 | Mongo 8 не совместима после апдейта | См. [ADR-0011](ADR.md#adr-0011--бэкапы-mongodb-через-mgob-форк-maxisammgob) — официально 2.0.28 про 7.0, на 8 проверено вживую. Если сломалось: `docker compose down mgob` и поднять свой sidecar с mongodump |
-| Место на диске кончилось | `docker run --rm -v aid-mongo-backups:/data alpine du -sh /data`. Снизить `retention` в плане и перезапустить mgob |
+| Место на диске кончилось | `du -sh .data/mongo-backups/`. Снизить `retention` в плане и перезапустить mgob |
+| После `git clone` Mongo не стартует | Каталог `.data/mongo/` не создан (его содержимое в .gitignore). Создай руками: `mkdir -p .data/mongo` перед `docker compose up` |

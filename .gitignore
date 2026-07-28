@@ -45,6 +45,15 @@ desktop.ini
 $RECYCLE.BIN/
 
 # --- Docker / data volumes ---
+# Сырые данные Mongo (WiredTiger) — не трекаем: нельзя безопасно копировать
+# на живой БД, всё равно бесполезно (это зеркало, не логический дамп).
+.data/mongo/*
+!.data/mongo/.gitkeep
+# Бэкапы mgob в `.data/mongo-backups/` — НАМЕРЕННО трекаем (git LFS
+# не настроен, поэтому пока просто коммитим .gz; при росте — переедем).
+# .log рядом с архивами — служебный stdout/stderr mongodump, в репо не нужен.
+# Если захочешь локально не коммитить — добавь сюда .data/mongo-backups/**/*.
+.data/mongo-backups/**/*.log
 data/
 *.sqlite
 *.sqlite3
