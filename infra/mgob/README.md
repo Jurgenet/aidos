@@ -86,4 +86,4 @@ docker logs aid-mgob
 | `connection refused` на :8090 | `docker ps` — `aid-mgob` поднят? `docker logs aid-mgob` |
 | В `/status` `last_run_status: 500` | Смотри `docker logs aid-mgob` и `curl localhost:8090/storage/aid/<last>.log` |
 | Архив пустой / 0 байт | Проверь, что `MONGO_DB_NAME=aid` совпадает с `database: aid` в плане |
-| Mongo 8 не совместима | См. ADR-0011 — официально mgob:1.12 про 7.0, на 8 проверено вживую; если сломалось после апдейта — откатить или поднять свой sidecar с mongodump |
+| Mongo 8 не совместима | См. ADR-0011 — официально mgob:2.0.28 про 7.0, на 8 проверено вживую; если сломалось после апдейта — откатить или поднять свой sidecar с mongodump |

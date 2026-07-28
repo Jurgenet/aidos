@@ -12,7 +12,7 @@
 #   caddy   — единая точка входа на :80/:443, авто-HTTPS для localhost,
 #             проксирует /api/* и статику
 #   mongo   — MongoDB 8, данные в named volume (живут между перезапусками)
-#   mgob    — агент бэкапов Mongo (maxisam/mgob:1.12), архивы в named volume,
+#   mgob    — агент бэкапов Mongo (maxisam/mgob:2.0.28), архивы в named volume,
 #             UI/API на :8090 (только localhost, без auth)
 #   server  — наш Express-бэкенд из apps/server
 #   client  — Vue-фронтенд из apps/client (Vite dev-сервер)
@@ -158,7 +158,7 @@ services:
       - server
 
   # -----------------------------------------------------------------------
-  # Backup agent — mgob (maxisam/mgob:1.12, форк активного stefanprodan/mgob)
+  # Backup agent — mgob (maxisam/mgob:2.0.28, форк активного stefanprodan/mgob)
   # -----------------------------------------------------------------------
   # Web UI и HTTP API на :8090 — только с localhost, без TLS и без auth.
   # В production за прокси не выставлять. План бэкапа — infra/mgob/config/aid.yaml
@@ -172,7 +172,7 @@ services:
   # mongodump 7.0 совместим с 8.x по wire-протоколу. Проверено вживую при
   # первом запуске (см. ADR-0011).
   mgob:
-    image: maxisam/mgob:1.12
+    image: maxisam/mgob:2.0.28
     container_name: aid-mgob
     restart: unless-stopped
     ports:
