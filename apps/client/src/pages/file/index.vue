@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { UiButton } from '@aid/mq/buttons'
 import { iconNames } from '@aid/mq/icons'
@@ -10,6 +10,7 @@ type FileMeta = {
   mimeType: string
   size: number
   uploadedAt: string
+  tags: string[]
 }
 
 const $q = useQuasar()
@@ -20,12 +21,25 @@ const error = ref<string | null>(null)
 
 const renameDialog = ref(false)
 const renameInput = ref('')
+const renameTagsInput = ref<string[]>([])
 const renameTarget = ref<FileMeta | null>(null)
 const renaming = ref(false)
 
 const lightboxOpen = ref(false)
 const lightboxUrl = ref<string | null>(null)
 const lightboxName = ref('')
+
+const searchQuery = ref('')
+const activeTagFilters = ref<string[]>([])
+const allKnownTags = computed(() => {
+  const set = new Set<string>()
+  for (const f of items.value) {
+    for (const t of f.tags) set.add(t)
+  }
+  return Array.from(set).sort()
+})
+/** Теги, которые припишутся следующему batch-upload (comma-separated). */
+const nextUploadTags = ref('')
 
 const hasFiles = computed(() => items.value.length > 0)
 
@@ -65,7 +79,15 @@ async function load(): Promise<void> {
   loading.value = true
   error.value = null
   try {
-    const r = await fetch('/api/files')
+    const params = new URLSearchParams()
+    if (searchQuery.value.trim() !== '') {
+      params.set('q', searchQuery.value.trim())
+    }
+    for (const t of activeTagFilters.value) {
+      params.append('tag', t)
+    }
+    const qs = params.toString()
+    const r = await fetch(`/api/files${qs !== '' ? `?${qs}` : ''}`)
     if (!r.ok) throw new Error(`HTTP ${r.status}`)
     const data = (await r.json()) as { items: FileMeta[]; total: number }
     items.value = data.items
@@ -90,11 +112,23 @@ function pickFiles(): void {
 async function uploadFiles(files: File[]): Promise<void> {
   uploading.value = true
   error.value = null
+  // Парсим теги для batch-upload: split по запятой, trim, lowercase, dedup
+  const tagsForBatch = Array.from(
+    new Set(
+      nextUploadTags.value
+        .split(',')
+        .map((t) => t.trim().toLowerCase())
+        .filter((t) => t !== ''),
+    ),
+  )
   let okCount = 0
   const errors: string[] = []
   for (const f of files) {
     const fd = new FormData()
     fd.append('file', f)
+    if (tagsForBatch.length > 0) {
+      fd.append('tags', tagsForBatch.join(','))
+    }
     try {
       const r = await fetch('/api/files', { method: 'POST', body: fd })
       if (!r.ok) {
@@ -130,6 +164,7 @@ async function copyLink(file: FileMeta): Promise<void> {
 function onRename(file: FileMeta): void {
   renameTarget.value = file
   renameInput.value = file.originalName
+  renameTagsInput.value = [...file.tags]
   renameDialog.value = true
 }
 
@@ -139,29 +174,45 @@ function openLightbox(file: FileMeta): void {
   lightboxOpen.value = true
 }
 
+function toggleTagFilter(tag: string): void {
+  const idx = activeTagFilters.value.indexOf(tag)
+  if (idx >= 0) activeTagFilters.value.splice(idx, 1)
+  else activeTagFilters.value.push(tag)
+}
+
 async function confirmRename(): Promise<void> {
   const target = renameTarget.value
   if (!target) {
     renameDialog.value = false
     return
   }
-  const trimmed = renameInput.value.trim()
-  if (trimmed === '' || trimmed === target.originalName) {
+  const trimmedName = renameInput.value.trim()
+  const cleanedTags = renameTagsInput.value
+    .map((t) => t.trim().toLowerCase())
+    .filter((t) => t !== '')
+  const tagsChanged =
+    cleanedTags.length !== target.tags.length ||
+    cleanedTags.some((t, i) => t !== target.tags[i])
+  const nameChanged = trimmedName !== '' && trimmedName !== target.originalName
+  if (!nameChanged && !tagsChanged) {
     renameDialog.value = false
     return
   }
   renaming.value = true
   try {
+    const body: { originalName?: string; tags?: string[] } = {}
+    if (nameChanged) body.originalName = trimmedName
+    if (tagsChanged) body.tags = cleanedTags
     const r = await fetch(`/api/files/${target.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ originalName: trimmed }),
+      body: JSON.stringify(body),
     })
     if (!r.ok) {
       const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
       throw new Error(data.error?.message ?? `HTTP ${r.status}`)
     }
-    $q.notify({ type: 'positive', message: 'Переименовано' })
+    $q.notify({ type: 'positive', message: 'Сохранено' })
     renameDialog.value = false
     renameTarget.value = null
     void load()
@@ -196,6 +247,18 @@ function onDelete(file: FileMeta): void {
 }
 
 onMounted(load)
+
+// Live-фильтрация: при изменении поиска или выбранных тегов — load().
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+watch(searchQuery, () => {
+  if (searchTimer !== null) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    void load()
+  }, 250)
+})
+watch(activeTagFilters, () => {
+  void load()
+}, { deep: true })
 </script>
 
 <template>
@@ -203,7 +266,7 @@ onMounted(load)
     <h1 class="text-h4 q-mb-md">Файлы</h1>
 
     <q-card class="q-mb-md">
-      <q-card-section>
+      <q-card-section class="q-gutter-md">
         <div class="row items-center q-gutter-md">
           <UiButton
             :icon="iconNames.cloudUpload"
@@ -211,6 +274,20 @@ onMounted(load)
             :loading="uploading"
             @click="pickFiles"
           />
+          <q-input
+            v-model="nextUploadTags"
+            outlined
+            dense
+            label="Теги (через запятую)"
+            style="min-width: 240px"
+            clearable
+            placeholder="work, screenshot, 2026"
+            @keyup.enter="pickFiles"
+          >
+            <template #prepend>
+              <q-icon :name="iconNames.label" />
+            </template>
+          </q-input>
           <UiButton
             :icon="iconNames.refresh"
             label="Обновить"
@@ -218,6 +295,37 @@ onMounted(load)
             :loading="loading"
             @click="load"
           />
+        </div>
+        <div class="row items-center q-gutter-md q-mt-sm">
+          <q-input
+            v-model="searchQuery"
+            outlined
+            dense
+            clearable
+            placeholder="Поиск по имени"
+            style="min-width: 240px"
+          >
+            <template #prepend>
+              <q-icon :name="iconNames.search" />
+            </template>
+          </q-input>
+          <q-select
+            v-model="activeTagFilters"
+            :options="allKnownTags"
+            label="Фильтр по тегам (AND)"
+            multiple
+            use-chips
+            clearable
+            dense
+            outlined
+            style="min-width: 320px"
+          />
+          <span
+            v-if="searchQuery || activeTagFilters.length > 0"
+            class="text-caption text-grey-7"
+          >
+            Найдено: {{ items.length }}
+          </span>
         </div>
       </q-card-section>
     </q-card>
@@ -278,6 +386,22 @@ onMounted(load)
             <div class="text-caption text-grey-6 q-mt-xs">
               {{ formatDate(file.uploadedAt) }}
             </div>
+            <div
+              v-if="file.tags.length > 0"
+              class="q-mt-sm q-gutter-xs row"
+            >
+              <q-chip
+                v-for="tag in file.tags"
+                :key="tag"
+                :label="tag"
+                size="sm"
+                :clickable="!activeTagFilters.includes(tag)"
+                :color="activeTagFilters.includes(tag) ? 'primary' : undefined"
+                :text-color="activeTagFilters.includes(tag) ? 'white' : undefined"
+                icon="label"
+                @click="toggleTagFilter(tag)"
+              />
+            </div>
           </q-card-section>
 
           <q-separator />
@@ -336,11 +460,11 @@ onMounted(load)
       v-model="renameDialog"
       persistent
     >
-      <q-card style="min-width: 360px">
+      <q-card style="min-width: 380px">
         <q-card-section>
           <div class="text-h6">Переименовать</div>
         </q-card-section>
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none q-gutter-sm">
           <q-input
             v-model="renameInput"
             autofocus
@@ -348,7 +472,21 @@ onMounted(load)
             dense
             label="Новое имя"
             :rules="[(v: string) => (v.trim().length > 0) || 'Имя не может быть пустым']"
-            @keyup.enter="confirmRename"
+          />
+          <q-select
+            v-model="renameTagsInput"
+            :options="allKnownTags"
+            label="Теги"
+            multiple
+            use-chips
+            use-input
+            new-value-mode="add-unique"
+            outlined
+            dense
+            clearable
+            hint="Enter — добавить, Backspace — удалить"
+            @new-value="(v: string) => renameTagsInput.push(v.trim().toLowerCase())"
+            @keyup.enter.stop
           />
         </q-card-section>
         <q-card-actions align="right">

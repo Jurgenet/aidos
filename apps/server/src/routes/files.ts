@@ -1,8 +1,9 @@
 import { Router, type RequestHandler, type Router as RouterType } from 'express'
 import multer from 'multer'
 import { createReadStream } from 'node:fs'
-import { fileService, FileNotFoundError } from '@aid/me/file/server'
+import { fileService, FileNotFoundError, parseTagsString } from '@aid/me/file/server'
 import { HttpError } from '@aid/me/shared/http-error'
+import type { FileListFilter } from '@aid/me/file/types'
 import { deleteFile, resolveFilePath, saveFile } from '../services/file-store.js'
 import { env } from '../config/env.js'
 import { logger } from '../config/logger.js'
@@ -87,9 +88,28 @@ const download: RequestHandler = async (req, res) => {
   }
 }
 
-const list: RequestHandler = async (_req, res, next) => {
+const list: RequestHandler = async (req, res, next) => {
   try {
-    const items = await fileService.list()
+    const q = req.query as Record<string, string | string[] | undefined>
+    const filter: FileListFilter = {}
+    // ?q=hello — case-insensitive substring по originalName
+    if (typeof q.q === 'string' && q.q !== '') {
+      filter.q = q.q
+    }
+    // ?tag=foo&tag=bar — можно несколько, AND-фильтр
+    const tagsRaw: string[] = []
+    for (const v of [q.tag, q['tag[]'], q.tags].flat()) {
+      if (typeof v === 'string' && v !== '') tagsRaw.push(v)
+      else if (Array.isArray(v)) {
+        for (const t of v) {
+          if (typeof t === 'string' && t !== '') tagsRaw.push(t)
+        }
+      }
+    }
+    if (tagsRaw.length > 0) {
+      filter.tags = tagsRaw
+    }
+    const items = await fileService.list(filter)
     res.json({ items, total: items.length })
   } catch (e) {
     next(e)
@@ -121,6 +141,9 @@ async function handleUpload(req: Parameters<RequestHandler>[0], res: Parameters<
     res.status(400).json({ error: { message: 'no file in form (field "file")' } })
     return
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const body = (req as any).body as { tags?: unknown } | undefined
+  const tags = parseTagsString(typeof body?.tags === 'string' ? body.tags : undefined)
   try {
     const saved = await saveFile({
       buffer: file.buffer,
@@ -131,6 +154,7 @@ async function handleUpload(req: Parameters<RequestHandler>[0], res: Parameters<
     const meta = await fileService.register(
       { originalname: file.originalname, mimetype: file.mimetype, size: file.size, buffer: file.buffer },
       saved.storedName,
+      tags,
     )
     res.status(201).json(meta)
   } catch (e) {
@@ -145,14 +169,21 @@ const update: RequestHandler = async (req, res, next) => {
     res.status(400).json({ error: { message: 'invalid id' } })
     return
   }
-  const body = (req.body ?? {}) as { originalName?: unknown }
+  const body = (req.body ?? {}) as { originalName?: unknown; tags?: unknown }
   if (body.originalName !== undefined && typeof body.originalName !== 'string') {
     res.status(400).json({ error: { message: 'originalName must be a string' } })
     return
   }
+  if (body.tags !== undefined) {
+    if (!Array.isArray(body.tags) || !body.tags.every((t) => typeof t === 'string')) {
+      res.status(400).json({ error: { message: 'tags must be a string array' } })
+      return
+    }
+  }
   try {
     const meta = await fileService.update(id, {
       originalName: typeof body.originalName === 'string' ? body.originalName : undefined,
+      tags: Array.isArray(body.tags) ? (body.tags as string[]) : undefined,
     })
     res.json(meta)
   } catch (e) {

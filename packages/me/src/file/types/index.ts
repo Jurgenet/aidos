@@ -11,6 +11,14 @@ export type FileMeta = {
   mimeType: string
   size: number
   uploadedAt: string
+  tags: string[]
+}
+
+/** Фильтр для list. `q` — substring по originalName (case-insensitive). */
+export type FileListFilter = {
+  q?: string
+  /** AND-фильтр: файл должен содержать ВСЕ указанные теги. */
+  tags?: string[]
 }
 
 /** То, что приходит от multer (memoryStorage). */

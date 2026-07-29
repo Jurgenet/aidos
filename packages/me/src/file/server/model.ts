@@ -21,8 +21,15 @@ const fileSchema = new Schema(
     storedName: { type: String, required: true, unique: true, maxlength: 255 },
     mimeType: { type: String, required: true, maxlength: 127 },
     size: { type: Number, required: true, min: 0 },
+    // Теги — короткие строки без пробелов. Trim/lowercase в сервисе.
+    // default не ставим — `toMeta` инициализирует пустым массивом для
+    // документов, созданных до миграции (см. `normalizeTags`).
+    tags: { type: [String] },
   },
   { timestamps: { createdAt: 'uploadedAt', updatedAt: false } },
 )
+// Индекс для AND-фильтра `find({tags: {$all: ['foo', 'bar']}})` и
+// сортировки/выборки по тегам.
+fileSchema.index({ tags: 1 })
 
 export const FileModel = model('File', fileSchema)

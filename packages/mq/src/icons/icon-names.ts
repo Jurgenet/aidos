@@ -25,4 +25,6 @@ export const iconNames = {
   download: 'download',
   openInNew: 'open_in_new',
   folder: 'folder',
+  label: 'label',
+  search: 'search',
 } as const
