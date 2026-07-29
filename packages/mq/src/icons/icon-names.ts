@@ -20,6 +20,7 @@ export const iconNames = {
   image: 'image',
   description: 'description',
   contentCopy: 'content_copy',
+  edit: 'edit',
   delete: 'delete',
   download: 'download',
   openInNew: 'open_in_new',

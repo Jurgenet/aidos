@@ -118,6 +118,32 @@ async function copyLink(file: FileMeta): Promise<void> {
   }
 }
 
+function onRename(file: FileMeta): void {
+  const next = prompt('Новое имя файла:', file.originalName)
+  if (next === null) return
+  const trimmed = next.trim()
+  if (trimmed === '' || trimmed === file.originalName) return
+  void (async () => {
+    try {
+      const r = await fetch(`/api/files/${file.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ originalName: trimmed }),
+      })
+      if (!r.ok) {
+        const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
+        throw new Error(data.error?.message ?? `HTTP ${r.status}`)
+      }
+      $q.notify({ type: 'positive', message: 'Переименовано' })
+      void load()
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      error.value = msg
+      $q.notify({ type: 'negative', message: `Не удалось: ${msg}` })
+    }
+  })()
+}
+
 function onDelete(file: FileMeta): void {
   if (!confirm(`Удалить "${file.originalName}"?\n\nФайл будет удалён с диска и из БД. Это необратимо.`)) {
     return
@@ -248,6 +274,14 @@ onMounted(load)
               round
               title="Скопировать прямую ссылку"
               @click="copyLink(file)"
+            />
+            <q-btn
+              :icon="iconNames.edit"
+              flat
+              dense
+              round
+              title="Переименовать"
+              @click="onRename(file)"
             />
             <q-space />
             <q-btn

@@ -2,6 +2,7 @@ import { Router, type RequestHandler, type Router as RouterType } from 'express'
 import multer from 'multer'
 import { createReadStream } from 'node:fs'
 import { fileService, FileNotFoundError } from '@aid/me/file/server'
+import { HttpError } from '@aid/me/shared/http-error'
 import { deleteFile, resolveFilePath, saveFile } from '../services/file-store.js'
 import { env } from '../config/env.js'
 import { logger } from '../config/logger.js'
@@ -138,6 +139,35 @@ async function handleUpload(req: Parameters<RequestHandler>[0], res: Parameters<
   }
 }
 
+const update: RequestHandler = async (req, res, next) => {
+  const id = req.params['id']
+  if (!isValidId(id)) {
+    res.status(400).json({ error: { message: 'invalid id' } })
+    return
+  }
+  const body = (req.body ?? {}) as { originalName?: unknown }
+  if (body.originalName !== undefined && typeof body.originalName !== 'string') {
+    res.status(400).json({ error: { message: 'originalName must be a string' } })
+    return
+  }
+  try {
+    const meta = await fileService.update(id, {
+      originalName: typeof body.originalName === 'string' ? body.originalName : undefined,
+    })
+    res.json(meta)
+  } catch (e) {
+    if (e instanceof FileNotFoundError) {
+      res.status(404).json({ error: { message: 'file not found' } })
+      return
+    }
+    if (e instanceof HttpError) {
+      res.status(e.status).json({ error: { message: e.message } })
+      return
+    }
+    next(e)
+  }
+}
+
 const remove: RequestHandler = async (req, res, next) => {
   const id = req.params['id']
   if (!isValidId(id)) {
@@ -179,6 +209,7 @@ export function filesRouter(): RouterType {
   r.get('/files/:id/download', download)
   r.get('/files/:id', view)
   r.post('/files', uploadHandler)
+  r.patch('/files/:id', update)
   r.delete('/files/:id', remove)
   return r
 }

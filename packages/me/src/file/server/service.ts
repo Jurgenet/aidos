@@ -78,6 +78,34 @@ export const fileService = {
     return { meta: toMeta(doc), storedName: doc.storedName as string }
   },
 
+  async update(id: string, input: { originalName?: string }): Promise<FileMeta> {
+    if (!Types.ObjectId.isValid(id)) throw new FileNotFoundError(id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const beforeDoc: any = await FileModel.findById(id).lean()
+    if (!beforeDoc) throw new FileNotFoundError(id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const update: any = {}
+    if (input.originalName !== undefined) {
+      const trimmed = input.originalName.trim()
+      if (trimmed === '') {
+        throw new HttpError(400, 'originalName cannot be empty')
+      }
+      update.originalName = trimmed.slice(0, 255)
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const afterDoc: any = await FileModel.findByIdAndUpdate(id, update, { new: true }).lean()
+    if (!afterDoc) throw new FileNotFoundError(id)
+    const after = toMeta(afterDoc)
+    await recordLog({
+      entity: 'file',
+      action: 'update',
+      documentId: id,
+      before: { id, originalName: beforeDoc.originalName, mimeType: beforeDoc.mimeType, size: beforeDoc.size },
+      after: { id: after.id, originalName: after.originalName, mimeType: after.mimeType, size: after.size },
+    })
+    return after
+  },
+
   async delete(id: string): Promise<{ meta: FileMeta; storedName: string }> {
     if (!Types.ObjectId.isValid(id)) throw new FileNotFoundError(id)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
