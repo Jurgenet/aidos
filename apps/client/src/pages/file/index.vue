@@ -23,6 +23,10 @@ const renameInput = ref('')
 const renameTarget = ref<FileMeta | null>(null)
 const renaming = ref(false)
 
+const lightboxOpen = ref(false)
+const lightboxUrl = ref<string | null>(null)
+const lightboxName = ref('')
+
 const hasFiles = computed(() => items.value.length > 0)
 
 function formatBytes(bytes: number): string {
@@ -127,6 +131,12 @@ function onRename(file: FileMeta): void {
   renameTarget.value = file
   renameInput.value = file.originalName
   renameDialog.value = true
+}
+
+function openLightbox(file: FileMeta): void {
+  lightboxUrl.value = viewUrl(file.id)
+  lightboxName.value = file.originalName
+  lightboxOpen.value = true
 }
 
 async function confirmRename(): Promise<void> {
@@ -236,7 +246,11 @@ onMounted(load)
         class="col-12 col-sm-6 col-md-4 col-lg-3"
       >
         <q-card class="file-card">
-          <div class="preview-wrapper">
+          <div
+            class="preview-wrapper"
+            :class="{ 'is-clickable': isImage(file.mimeType) }"
+            @click="isImage(file.mimeType) && openLightbox(file)"
+          >
             <img
               v-if="isImage(file.mimeType)"
               :src="viewUrl(file.id)"
@@ -353,6 +367,49 @@ onMounted(load)
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog
+      v-model="lightboxOpen"
+      full-width
+      full-height
+      seamless
+    >
+      <div
+        class="lightbox-backdrop"
+        @click.self="lightboxOpen = false"
+      >
+        <q-btn
+          :icon="iconNames.openInNew"
+          flat
+          dense
+          round
+          color="white"
+          class="lightbox-open-btn"
+          :href="lightboxUrl ?? '#'"
+          target="_blank"
+          title="Открыть в новой вкладке"
+        />
+        <q-btn
+          :icon="'close'"
+          flat
+          dense
+          round
+          color="white"
+          class="lightbox-close-btn"
+          title="Закрыть"
+          @click="lightboxOpen = false"
+        />
+        <img
+          v-if="lightboxUrl"
+          :src="lightboxUrl"
+          :alt="lightboxName"
+          class="lightbox-image"
+        >
+        <div class="lightbox-caption">
+          {{ lightboxName }}
+        </div>
+      </div>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -371,13 +428,65 @@ onMounted(load)
   overflow: hidden;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+  position: relative;
+}
+.preview-wrapper.is-clickable {
+  cursor: zoom-in;
+}
+.preview-wrapper.is-clickable:hover .preview-image {
+  transform: scale(1.02);
+  transition: transform 0.15s ease;
 }
 .preview-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  transition: transform 0.15s ease;
 }
 .preview-icon {
   color: #b0b0b0;
+}
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6000;
+}
+.lightbox-image {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.lightbox-caption {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-family: monospace;
+  max-width: 80vw;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lightbox-close-btn,
+.lightbox-open-btn {
+  position: absolute;
+  top: 16px;
+  background: rgba(0, 0, 0, 0.4);
+}
+.lightbox-close-btn {
+  right: 16px;
+}
+.lightbox-open-btn {
+  right: 64px;
 }
 </style>
