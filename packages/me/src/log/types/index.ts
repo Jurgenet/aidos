@@ -5,7 +5,7 @@
  * отображения. Запись — только через server-сервис `recordLog`.
  */
 
-export const LOG_ENTITIES = ['user', 'account', 'note', 'device', 'order'] as const
+export const LOG_ENTITIES = ['user', 'account', 'note', 'device', 'order', 'file'] as const
 export type LogEntity = (typeof LOG_ENTITIES)[number]
 
 export const LOG_ACTIONS = ['create', 'update', 'delete'] as const

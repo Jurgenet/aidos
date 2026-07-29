@@ -14,6 +14,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'device', name: 'device', component: () => import('@/pages/device/index.vue') },
       { path: 'backup', name: 'backup', component: () => import('@/pages/backup/index.vue') },
       { path: 'log', name: 'log', component: () => import('@/pages/log/index.vue') },
+      { path: 'file', name: 'file', component: () => import('@/pages/file/index.vue') },
     ],
   },
   {

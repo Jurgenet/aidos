@@ -63,6 +63,14 @@ export const env = {
   // Каталог для runtime-стейта нотификатора (chat_id, enabled). В compose
   // маунтится read-write (BACKUPS_DIR маунтится read-only отдельно).
   TELEGRAM_STATE_DIR: readString('TELEGRAM_STATE_DIR', '.data'),
+  // Каталог для загруженных файлов. В compose — /files (bind-mount на
+  // /.data/file_store), в локальном dev — .data/file_store относительно
+  // cwd. Пользователь может поменять source в compose.yaml, чтобы
+  // хранить файлы на отдельном диске.
+  FILE_STORE_DIR: readString('FILE_STORE_DIR', '.data/file_store'),
+  // Максимальный размер одного файла (байт). Защита от заливки огромных
+  // файлов в dev. По умолчанию 50 MB.
+  FILE_MAX_SIZE: readNumber('FILE_MAX_SIZE', 50 * 1024 * 1024, 1, 5 * 1024 * 1024 * 1024),
 } as const
 
 export type Env = typeof env

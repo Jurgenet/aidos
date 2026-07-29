@@ -43,6 +43,7 @@ const ENTITY_LABEL: Record<LogEntity, string> = {
   note: 'Заметка',
   device: 'Устройство',
   order: 'Заказ',
+  file: 'Файл',
 }
 
 class TelegramNotifier {

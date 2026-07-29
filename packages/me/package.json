@@ -64,6 +64,14 @@
     "./log/server": {
       "types": "./dist/log/server/index.d.ts",
       "import": "./dist/log/server/index.js"
+    },
+    "./file/types": {
+      "types": "./dist/file/types/index.d.ts",
+      "import": "./dist/file/types/index.js"
+    },
+    "./file/server": {
+      "types": "./dist/file/server/index.d.ts",
+      "import": "./dist/file/server/index.js"
     }
   },
   "scripts": {

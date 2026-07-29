@@ -122,10 +122,13 @@ services:
       # делает mgob через собственный mount.
       BACKUPS_DIR: /backups
       # Telegram-стейт (chat_id, enabled) — RW, отдельный mount, чтобы
-      # /backups оставался read-only. TELEGRAM_BOT_TOKEN и остальные
-      # TELEGRAM_* берутся из .env через env_file ниже — если файла
-      # нет, .env.example как шаблон, фича выключена по дефолту.
+      # /backups оставался read-only. TELEGRAM_* берутся из .env через
+      # env_file ниже — если файла нет, .env.example как шаблон, фича
+      # выключена по дефолту.
       TELEGRAM_STATE_DIR: /data
+      # Файловое хранилище: в compose — /files (bind-mount ниже).
+      # В локальном dev — .data/file_store относительно cwd.
+      FILE_STORE_DIR: /files
     env_file:
       # Подтягивает переменные из корневого .env (см. .env.example).
       # `required: false` — если файла нет, compose не падает, нотификатор
@@ -140,6 +143,9 @@ services:
       - ./.data/mongo-backups:/backups:ro
       # Telegram-стейт: read-write. Сюда пишется chat_id и runtime enabled.
       - ./.data:/data
+      # Файлы: read-write. Можно поменять source на отдельный диск —
+      # например /mnt/external/files:/files, контейнер этого не заметит.
+      - ./.data/file_store:/files
     depends_on:
       # Не стартовать, пока Mongo не пройдёт healthcheck.
       mongo:

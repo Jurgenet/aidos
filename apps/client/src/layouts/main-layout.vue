@@ -77,6 +77,12 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           to="/log"
           label="История"
         />
+
+        <UiDrawerLink
+          :icon="iconNames.folder"
+          to="/file"
+          label="Файлы"
+        />
       </UiList>
     </UiDrawer>
 

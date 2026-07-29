@@ -18,7 +18,7 @@ import { Schema, model } from 'mongoose'
  */
 const logSchema = new Schema(
   {
-    entity: { type: String, required: true, enum: ['user', 'account', 'note', 'device', 'order'] },
+    entity: { type: String, required: true, enum: ['user', 'account', 'note', 'device', 'order', 'file'] },
     action: { type: String, required: true, enum: ['create', 'update', 'delete'] },
     documentId: { type: String, required: true },
     userId: { type: String, default: null },

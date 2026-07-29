@@ -1,0 +1,9 @@
+# Загруженные файлы (бинарный контент) — в .gitignore. Содержимое этого
+# каталога лежит в bind-mount (см. compose.yaml, по умолчанию ./.data/file_store,
+# можно перенести на отдельный диск: /mnt/external/files:/files).
+#
+# Метаданные загруженных файлов (originalName, mimeType, size, uploadedAt)
+# хранятся в MongoDB-коллекции 'file' и доступны через /api/files.
+#
+# Этот .gitkeep нужен, чтобы каталог создавался при `git clone` — без него
+# bind-mount в compose упадёт при первом старте server'а.

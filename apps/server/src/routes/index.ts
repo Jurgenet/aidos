@@ -2,6 +2,7 @@ import { Router, type Router as RouterType } from 'express'
 import { healthRouter } from './health.js'
 import { backupsRouter } from './backups.js'
 import { logsRouter } from './logs.js'
+import { filesRouter } from './files.js'
 import { userRouter } from '@aid/me/user/server'
 import { accountRouter } from '@aid/me/account/server'
 import { noteRouter } from '@aid/me/note/server'
@@ -12,6 +13,7 @@ export function apiRouter(): RouterType {
   r.use(healthRouter())
   r.use(backupsRouter())
   r.use(logsRouter())
+  r.use(filesRouter())
   r.use(userRouter())
   r.use(accountRouter())
   r.use(noteRouter())
