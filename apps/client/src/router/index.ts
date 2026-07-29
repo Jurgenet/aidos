@@ -15,6 +15,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'backup', name: 'backup', component: () => import('@/pages/backup/index.vue') },
       { path: 'log', name: 'log', component: () => import('@/pages/log/index.vue') },
       { path: 'file', name: 'file', component: () => import('@/pages/file/index.vue') },
+      { path: 'tag', name: 'tag', component: () => import('@/pages/tag/index.vue') },
     ],
   },
   {

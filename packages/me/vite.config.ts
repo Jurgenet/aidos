@@ -27,6 +27,8 @@ export default defineConfig({
         'log/server': fileURLToPath(new URL('./src/log/server/index.ts', import.meta.url)),
         'file/types': fileURLToPath(new URL('./src/file/types/index.ts', import.meta.url)),
         'file/server': fileURLToPath(new URL('./src/file/server/index.ts', import.meta.url)),
+        'tag/types': fileURLToPath(new URL('./src/tag/types/index.ts', import.meta.url)),
+        'tag/server': fileURLToPath(new URL('./src/tag/server/index.ts', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}/index.js`,

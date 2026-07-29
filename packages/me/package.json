@@ -72,6 +72,14 @@
     "./file/server": {
       "types": "./dist/file/server/index.d.ts",
       "import": "./dist/file/server/index.js"
+    },
+    "./tag/types": {
+      "types": "./dist/tag/types/index.d.ts",
+      "import": "./dist/tag/types/index.js"
+    },
+    "./tag/server": {
+      "types": "./dist/tag/server/index.d.ts",
+      "import": "./dist/tag/server/index.js"
     }
   },
   "scripts": {

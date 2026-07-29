@@ -83,6 +83,12 @@ appUiSettingsStore.$subscribe((mutation, state) => {
           to="/file"
           label="Файлы"
         />
+
+        <UiDrawerLink
+          :icon="iconNames.sell"
+          to="/tag"
+          label="Теги"
+        />
       </UiList>
     </UiDrawer>
 

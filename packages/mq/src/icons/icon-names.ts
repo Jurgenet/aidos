@@ -27,4 +27,6 @@ export const iconNames = {
   folder: 'folder',
   label: 'label',
   search: 'search',
+  sell: 'sell',
+  style: 'style',
 } as const
