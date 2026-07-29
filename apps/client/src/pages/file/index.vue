@@ -18,6 +18,11 @@ const loading = ref(false)
 const uploading = ref(false)
 const error = ref<string | null>(null)
 
+const renameDialog = ref(false)
+const renameInput = ref('')
+const renameTarget = ref<FileMeta | null>(null)
+const renaming = ref(false)
+
 const hasFiles = computed(() => items.value.length > 0)
 
 function formatBytes(bytes: number): string {
@@ -119,29 +124,44 @@ async function copyLink(file: FileMeta): Promise<void> {
 }
 
 function onRename(file: FileMeta): void {
-  const next = prompt('Новое имя файла:', file.originalName)
-  if (next === null) return
-  const trimmed = next.trim()
-  if (trimmed === '' || trimmed === file.originalName) return
-  void (async () => {
-    try {
-      const r = await fetch(`/api/files/${file.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ originalName: trimmed }),
-      })
-      if (!r.ok) {
-        const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
-        throw new Error(data.error?.message ?? `HTTP ${r.status}`)
-      }
-      $q.notify({ type: 'positive', message: 'Переименовано' })
-      void load()
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e)
-      error.value = msg
-      $q.notify({ type: 'negative', message: `Не удалось: ${msg}` })
+  renameTarget.value = file
+  renameInput.value = file.originalName
+  renameDialog.value = true
+}
+
+async function confirmRename(): Promise<void> {
+  const target = renameTarget.value
+  if (!target) {
+    renameDialog.value = false
+    return
+  }
+  const trimmed = renameInput.value.trim()
+  if (trimmed === '' || trimmed === target.originalName) {
+    renameDialog.value = false
+    return
+  }
+  renaming.value = true
+  try {
+    const r = await fetch(`/api/files/${target.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ originalName: trimmed }),
+    })
+    if (!r.ok) {
+      const data = (await r.json().catch(() => ({}))) as { error?: { message?: string } }
+      throw new Error(data.error?.message ?? `HTTP ${r.status}`)
     }
-  })()
+    $q.notify({ type: 'positive', message: 'Переименовано' })
+    renameDialog.value = false
+    renameTarget.value = null
+    void load()
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    error.value = msg
+    $q.notify({ type: 'negative', message: `Не удалось: ${msg}` })
+  } finally {
+    renaming.value = false
+  }
 }
 
 function onDelete(file: FileMeta): void {
@@ -297,6 +317,42 @@ onMounted(load)
         </q-card>
       </div>
     </div>
+
+    <q-dialog
+      v-model="renameDialog"
+      persistent
+    >
+      <q-card style="min-width: 360px">
+        <q-card-section>
+          <div class="text-h6">Переименовать</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-input
+            v-model="renameInput"
+            autofocus
+            outlined
+            dense
+            label="Новое имя"
+            :rules="[(v: string) => (v.trim().length > 0) || 'Имя не может быть пустым']"
+            @keyup.enter="confirmRename"
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Отмена"
+            :disable="renaming"
+            @click="renameDialog = false"
+          />
+          <q-btn
+            color="primary"
+            label="Сохранить"
+            :loading="renaming"
+            @click="confirmRename"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
